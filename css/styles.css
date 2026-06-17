@@ -259,7 +259,7 @@ body {
 .score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .ring-bg { fill: none; stroke: var(--border); stroke-width: 10; }
 .ring-fg { fill: none; stroke: url(#g); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 327; stroke-dashoffset: 327; transition: stroke-dashoffset 1s ease; }
-.score-ring-text { position: absolute; inset: 0; display: grid; place-items: center; flex-direction: column; }
+.score-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .score-pct { display: block; font-size: 40px; font-weight: 800; line-height: 1; }
 .score-frac { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; }
 
@@ -322,7 +322,7 @@ body.in-quiz #quiz.active { display: flex; flex-direction: column; }
 .in-quiz .feedback-body { font-size: 13.5px; }
 .in-quiz .quiz-foot { margin-top: 14px; }
 /* If a question is unusually long, let only the options scroll, not the page */
-.in-quiz .options { max-height: calc(100vh - 360px); overflow-y: auto; }
+.in-quiz .options { max-height: calc(100vh - 360px); overflow-y: auto; overflow-x: hidden; }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 640px) {
