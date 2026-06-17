@@ -11,7 +11,8 @@
   // ---------- session state ----------
   const state = {
     mode: "training",          // "training" | "test"
-    scope: "all",              // "all" | "random25" | "random50" | "lec:<n>"
+    scope: "all",              // "all" | "random25" | "random50" | "lecs"
+    selectedLecs: new Set(),   // chosen lecture numbers when scope === "lecs"
     shuffleQuestions: false,
     shuffleOptions: false,
     deck: [],                  // active question objects (with possibly remapped options)
@@ -68,13 +69,16 @@
         </div>
         <span class="lec-num">Lecture ${num}</span>
         <span class="lec-title">${meta.title}</span>`;
-      card.addEventListener("click", () => selectScope("lec:" + num, card));
+      card.addEventListener("click", () => toggleLecture(num, card));
       grid.appendChild(card);
     });
   }
 
-  function selectScope(scope, clickedEl) {
+  // Chips are single-select shortcuts: "all" / "random25" / "random50".
+  // Picking one clears any selected lectures.
+  function selectChipScope(scope, clickedEl) {
     state.scope = scope;
+    state.selectedLecs.clear();
     document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     document.querySelectorAll(".lec-card").forEach((c) => c.classList.remove("active"));
     if (clickedEl) clickedEl.classList.add("active");
@@ -82,6 +86,23 @@
       const chip = document.querySelector(`.chip[data-scope="${scope}"]`);
       if (chip) chip.classList.add("active");
     }
+    updateStartSummary();
+  }
+
+  // Lecture cards are multi-select: tap to add/remove. Any selection switches
+  // scope to "lecs"; clearing the last one falls back to "All lectures".
+  function toggleLecture(num, cardEl) {
+    num = Number(num);
+    if (state.selectedLecs.has(num)) state.selectedLecs.delete(num);
+    else state.selectedLecs.add(num);
+
+    if (state.selectedLecs.size === 0) {
+      selectChipScope("all");
+      return;
+    }
+    state.scope = "lecs";
+    cardEl.classList.toggle("active", state.selectedLecs.has(num));
+    document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     updateStartSummary();
   }
 
@@ -97,9 +118,11 @@
     if (state.scope === "all") return "All lectures";
     if (state.scope === "random25") return "Quick 25 (random)";
     if (state.scope === "random50") return "Quick 50 (random)";
-    if (state.scope.startsWith("lec:")) {
-      const n = state.scope.split(":")[1];
-      return `Lecture ${n} · ${LECTURES[n].title}`;
+    if (state.scope === "lecs") {
+      const nums = [...state.selectedLecs].sort((a, b) => a - b);
+      if (nums.length === 1) return `Lecture ${nums[0]} · ${LECTURES[nums[0]].title}`;
+      if (nums.length <= 4) return `Lectures ${nums.join(", ")}`;
+      return `${nums.length} lectures selected`;
     }
     return "";
   }
@@ -116,9 +139,8 @@
   // ---------- deck building ----------
   function buildDeckSource() {
     let pool;
-    if (state.scope.startsWith("lec:")) {
-      const n = Number(state.scope.split(":")[1]);
-      pool = QUESTIONS.filter((q) => q.lec === n);
+    if (state.scope === "lecs") {
+      pool = QUESTIONS.filter((q) => state.selectedLecs.has(q.lec));
     } else if (state.scope === "random25") {
       pool = sample(QUESTIONS, 25);
     } else if (state.scope === "random50") {
@@ -409,15 +431,15 @@
     initTheme();
     renderLectures();
     selectMode("training");
-    selectScope("all");
+    selectChipScope("all");
 
     // mode cards
     document.querySelectorAll(".mode-card").forEach((c) =>
       c.addEventListener("click", () => selectMode(c.dataset.mode)));
 
-    // scope chips
+    // scope chips (single-select)
     document.querySelectorAll(".chip").forEach((c) =>
-      c.addEventListener("click", () => selectScope(c.dataset.scope, c)));
+      c.addEventListener("click", () => selectChipScope(c.dataset.scope, c)));
 
     // options toggles
     $("shuffleQuestions").addEventListener("change", (e) => { state.shuffleQuestions = e.target.checked; });
