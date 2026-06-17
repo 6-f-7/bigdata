@@ -32,6 +32,8 @@
   function show(screenId) {
     document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
     $(screenId).classList.add("active");
+    // Compact, footer-less layout while taking the quiz so it fits without scrolling
+    document.body.classList.toggle("in-quiz", screenId === "quiz");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 

@@ -296,6 +296,34 @@ body {
 /* ---------------- Footer ---------------- */
 .footer { max-width: 980px; margin: 0 auto; padding: 24px 32px 40px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); }
 
+/* ---------------- Compact quiz (fit viewport, no page scroll) ---------------- */
+body.in-quiz .footer { display: none; }
+body.in-quiz #app {
+  max-width: 1040px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+body.in-quiz #quiz.active { display: flex; flex-direction: column; }
+.in-quiz .quiz-head { margin-bottom: 10px; }
+.in-quiz .progress-wrap { margin-bottom: 12px; }
+.in-quiz .progress-text { margin-top: 5px; }
+.in-quiz .question-card { padding: clamp(14px, 2vw, 22px); box-shadow: var(--shadow); }
+.in-quiz .q-number { font-size: 12px; }
+.in-quiz .q-text { font-size: clamp(16px, 2.1vw, 21px); margin: 6px 0 14px; line-height: 1.4; }
+.in-quiz .options { gap: 8px; }
+.in-quiz .option { padding: 10px 14px; font-size: 14.5px; }
+.in-quiz .option .opt-letter { width: 26px; height: 26px; font-size: 13px; }
+.in-quiz .feedback { margin-top: 12px; padding: 12px 15px; }
+.in-quiz .feedback-head { font-size: 14px; margin-bottom: 4px; }
+.in-quiz .feedback-body { font-size: 13.5px; }
+.in-quiz .quiz-foot { margin-top: 14px; }
+/* If a question is unusually long, let only the options scroll, not the page */
+.in-quiz .options { max-height: calc(100vh - 360px); overflow-y: auto; }
+
 /* ---------------- Responsive ---------------- */
 @media (max-width: 640px) {
   .mode-row { grid-template-columns: 1fr; }

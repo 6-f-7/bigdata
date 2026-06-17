@@ -1,7 +1,7 @@
 # DS4511 — Big Data Test Bank 🧠
 
 An interactive, single-page web app for studying the **DS4511 Big Data** exam question bank.
-All **315 questions (Q87–Q401)** from the exam paper, split by lecture, with two study modes,
+All **269 questions (Q1–Q269)** from the exam paper, split by lecture, with two study modes,
 scoring, and an explanation for every question.
 
 > No build step, no server, no dependencies. Just open `index.html`.
@@ -10,7 +10,7 @@ scoring, and an explanation for every question.
 
 ## ✨ Features
 
-- **315 questions across 11 lectures** (Lectures 2–12), each tagged with its CLO.
+- **269 questions across 12 lectures** (Lectures 1–12), each tagged with its CLO.
 - **Two modes**
   - 🎓 **Training mode** — after each question you instantly see the correct answer highlighted **and a written explanation** rooted in the course material.
   - 📝 **Test mode** — answer first, get **scored at the end** with a full breakdown and review.
@@ -53,6 +53,7 @@ Push to GitHub, then enable **Settings → Pages → Deploy from branch** and pi
 
 | Lec | Topic | Questions |
 |----:|-------|----------:|
+| 1 | Big Data Fundamentals | 16 |
 | 2 | Big Data Ecosystem & Hadoop | 12 |
 | 3 | Data Ingestion | 15 |
 | 4 | Data Mining Fundamentals | 16 |
@@ -62,12 +63,11 @@ Push to GitHub, then enable **Settings → Pages → Deploy from branch** and pi
 | 8 | Text Mining | 32 |
 | 9 | Graph Mining | 31 |
 | 10 | Data Streams | 32 |
-| 11 | Responsible Data Mining (Ethics & Privacy) | 62 |
-| 12 | Advanced Mining (IoT, Edge & AI) | 62 |
-| | **Total** | **315** |
+| 11 | Responsible Data Mining (Ethics & Privacy) | 31 |
+| 12 | Advanced Mining (IoT, Edge & AI) | 31 |
+| | **Total** | **269** |
 
-> Lectures 11 and 12 contain repeated question sets in the original exam paper; they are
-> kept as-is so the bank faithfully matches the source.
+> Questions are numbered 1–269 to match the exam paper exactly.
 
 ## 📁 Project structure
 
@@ -87,7 +87,7 @@ Each entry in `js/questions.js` looks like:
 
 ```js
 {
-  id: 87, lec: 2, clo: "1.1",
+  id: 17, lec: 2, clo: "1.1",
   q: "Which of the following best describes the role of the Big Data ecosystem?",
   options: ["…", "…", "…", "…"],   // A, B, C, D
   answer: 1,                         // 0-based index of the correct option
