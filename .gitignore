@@ -1,0 +1,11 @@
+# Node / test tooling (jsdom is only used locally for smoke tests)
+node_modules/
+package-lock.json
+package.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
