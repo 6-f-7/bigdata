@@ -1,98 +1,23 @@
-# DS4511 — Big Data Test Bank 🧠
+# مِران — تدريبك اليومي للإنجليزية المهنية 🇸🇦
 
-An interactive, single-page web app for studying the **DS4511 Big Data** exam question bank.
-All **269 questions (Q1–Q269)** from the exam paper, split by lecture, with two study modes,
-scoring, and an explanation for every question.
+تطبيق ويب بصفحة واحدة لتطوير الإنجليزية **المهنية والعملية**: مقابلات وظيفية، إيميلات، LinkedIn، ومصطلحات علم البيانات — بواجهة عربية كاملة (RTL) وشرح دائم بالعربي.
 
-> No build step, no server, no dependencies. Just open `index.html`.
+## المزايا
 
----
+- ✍️ **تدريب كتابة بتصحيح ذكي** — اكتب أي نص إنجليزي والذكاء الاصطناعي (Claude) يصحح أخطاءك واحداً واحداً، يشرح كل خطأ بالعربي (قواعد، اختيار كلمات، أسلوب)، ويعطيك صياغة أكثر احترافية.
+- 🃏 **مفردات يومية** — ٥٠ بطاقة تعليمية في ٤ أقسام: مصطلحات علم البيانات، لغة المقابلات، الإيميلات، وإنجليزية العمل. كل بطاقة فيها المصطلح + جملة مثال + المعنى بالعربي. تعمل بدون إنترنت.
+- 🎤 **تدريب مقابلات** — ١٢ سؤال مقابلة شائعاً لوظائف Data Science. اكتب إجابتك ويقيّمها الذكاء الاصطناعي لغوياً من ١٠، ويعطيك نسخة محسّنة مع شرح الفروقات بالعربي.
+- 🔥 **تتبع تقدم** — عداد أيام متتالية (streak)، عدد التمارين، ونشاط آخر ٧ أيام.
 
-## ✨ Features
+## طريقة الاستخدام
 
-- **269 questions across 12 lectures** (Lectures 1–12), each tagged with its CLO.
-- **Two modes**
-  - 🎓 **Training mode** — after each question you instantly see the correct answer highlighted **and a written explanation** rooted in the course material.
-  - 📝 **Test mode** — answer first, get **scored at the end** with a full breakdown and review.
-- **Pick your scope** — study one lecture, the whole bank, or a random *Quick 25 / Quick 50*.
-- **Results dashboard** — animated score ring, correct / incorrect / skipped tiles, and a **per-lecture accuracy breakdown** so you know what to revise.
-- **Review answers** — see every question with the right answer, your answer, and the explanation.
-- **Retry wrong only** — re-test just the questions you missed.
-- **Options**: shuffle questions and/or shuffle answer choices.
-- **Polished UI** — responsive, dark/light theme, keyboard shortcuts, progress bar.
+التطبيق ملف واحد (`index.html`) بدون أي اعتماديات أو خطوة بناء. طريقتان لتشغيله:
 
-## ⌨️ Keyboard shortcuts (during a quiz)
+1. **داخل Claude (الأفضل)** — كـ Artifact على claude.ai: ميزات الذكاء الاصطناعي تعمل تلقائياً بدون أي إعداد، وتقدر تشارك الرابط مع أي شخص عنده حساب Claude.
+2. **مستقلاً (GitHub Pages أو محلياً)** — البطاقات والتتبع تعمل مباشرة. لتفعيل التصحيح والتقييم، أضف مفتاح [Anthropic API](https://platform.claude.com/) من تبويب «تقدمي» (يُحفظ في متصفحك فقط).
 
-| Key | Action |
-|-----|--------|
-| `1`–`4` or `A`–`D` | Select an answer |
-| `→` / `Enter` | Next question (or finish) |
-| `←` | Previous question |
+## تقنياً
 
-## 🚀 Running it
-
-Just open the file in a browser:
-
-```bash
-# from the repo root
-open index.html        # macOS
-xdg-open index.html    # Linux
-```
-
-…or serve it locally:
-
-```bash
-python3 -m http.server 8000
-# then visit http://localhost:8000
-```
-
-### Deploy on GitHub Pages
-Push to GitHub, then enable **Settings → Pages → Deploy from branch** and pick this branch with the root (`/`) folder. The site is fully static.
-
-## 🗂️ Lectures covered
-
-| Lec | Topic | Questions |
-|----:|-------|----------:|
-| 1 | Big Data Fundamentals | 16 |
-| 2 | Big Data Ecosystem & Hadoop | 12 |
-| 3 | Data Ingestion | 15 |
-| 4 | Data Mining Fundamentals | 16 |
-| 5 | Big Data Frameworks | 9 |
-| 6 | Analytics & Visualization | 12 |
-| 7 | Association Rule Mining | 32 |
-| 8 | Text Mining | 32 |
-| 9 | Graph Mining | 31 |
-| 10 | Data Streams | 32 |
-| 11 | Responsible Data Mining (Ethics & Privacy) | 31 |
-| 12 | Advanced Mining (IoT, Edge & AI) | 31 |
-| | **Total** | **269** |
-
-> Questions are numbered 1–269 to match the exam paper exactly.
-
-## 📁 Project structure
-
-```
-.
-├── index.html        # markup & screens (home / quiz / results)
-├── css/
-│   └── styles.css     # all styling + dark & light themes
-└── js/
-    ├── questions.js   # the 315-question database (text, options, answer, explanation)
-    └── app.js         # quiz engine, scoring, review, navigation
-```
-
-## ✏️ Editing the questions
-
-Each entry in `js/questions.js` looks like:
-
-```js
-{
-  id: 17, lec: 2, clo: "1.1",
-  q: "Which of the following best describes the role of the Big Data ecosystem?",
-  options: ["…", "…", "…", "…"],   // A, B, C, D
-  answer: 1,                         // 0-based index of the correct option
-  explanation: "…"                   // shown in training mode & review
-}
-```
-
-Add, edit, or correct questions there — the app picks up changes automatically on reload.
+- HTML/CSS/JS خام في ملف واحد، تصميم متجاوب mobile-first، ويدعم الوضع الفاتح والداكن.
+- الذكاء الاصطناعي: `window.claude.complete` داخل Claude، أو Anthropic Messages API مباشرة (موديل `claude-opus-4-8`) عند استخدام مفتاح API.
+- الحفظ: `window.storage` إذا كان متاحاً، وإلا `localStorage`، وإلا في الذاكرة مع تنبيه للمستخدم.
