@@ -1,172 +1,955 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DS4511 · Big Data Test Bank</title>
-  <meta name="description" content="Interactive DS4511 Big Data exam test bank — training and test modes, split by lecture, with explanations." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body data-theme="dark">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مِران — تدريب الإنجليزية المهنية</title>
+<style>
+/* ============ tokens ============ */
+:root{
+  --bg:#F5F7F6; --surface:#FFFFFF; --surface2:#EEF3F1;
+  --ink:#182A2F; --muted:#5B6E73; --line:#E0E8E5;
+  --accent:#0E7C66; --on-accent:#FFFFFF; --accent-soft:#E4F2ED; --accent-line:#BFDED4;
+  --amber:#A66A1C; --amber-soft:#F6ECDA;
+  --danger:#B04431; --danger-soft:#F7E8E4;
+  --good:#0E7C66; --good-soft:#E4F2ED;
+  --shadow:0 1px 2px rgba(20,40,38,.06), 0 6px 20px -8px rgba(20,40,38,.12);
+  --radius:16px; --radius-s:10px;
+  --font-ui:"Segoe UI","SF Pro","Noto Naskh Arabic","Helvetica Neue",system-ui,Tahoma,sans-serif;
+  --font-en:Charter,Georgia,"Times New Roman",serif;
+  direction:rtl;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0D181C; --surface:#152329; --surface2:#1B2C33;
+    --ink:#E6EEEF; --muted:#93A8AD; --line:#22363E;
+    --accent:#3FBD9D; --on-accent:#06231D; --accent-soft:#14352F; --accent-line:#1F4E44;
+    --amber:#DFA65C; --amber-soft:#33270F;
+    --danger:#E08A76; --danger-soft:#3A1F17;
+    --good:#3FBD9D; --good-soft:#14352F;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F5F7F6; --surface:#FFFFFF; --surface2:#EEF3F1;
+  --ink:#182A2F; --muted:#5B6E73; --line:#E0E8E5;
+  --accent:#0E7C66; --on-accent:#FFFFFF; --accent-soft:#E4F2ED; --accent-line:#BFDED4;
+  --amber:#A66A1C; --amber-soft:#F6ECDA;
+  --danger:#B04431; --danger-soft:#F7E8E4;
+  --good:#0E7C66; --good-soft:#E4F2ED;
+  --shadow:0 1px 2px rgba(20,40,38,.06), 0 6px 20px -8px rgba(20,40,38,.12);
+}
+:root[data-theme="dark"]{
+  --bg:#0D181C; --surface:#152329; --surface2:#1B2C33;
+  --ink:#E6EEEF; --muted:#93A8AD; --line:#22363E;
+  --accent:#3FBD9D; --on-accent:#06231D; --accent-soft:#14352F; --accent-line:#1F4E44;
+  --amber:#DFA65C; --amber-soft:#33270F;
+  --danger:#E08A76; --danger-soft:#3A1F17;
+  --good:#3FBD9D; --good-soft:#14352F;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -10px rgba(0,0,0,.5);
+}
 
-  <!-- Top bar -->
-  <header class="topbar">
-    <div class="brand" id="homeLink" role="button" tabindex="0" title="Back to home">
-      <span class="brand-mark">DS</span>
-      <div class="brand-text">
-        <strong>Big Data Test Bank</strong>
-        <span>DS4511 · 269 questions</span>
+/* ============ base ============ */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--font-ui); font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+h1,h2,h3{margin:0; line-height:1.35; text-wrap:balance}
+p{margin:0}
+button{font-family:inherit; font-size:inherit; cursor:pointer; border:none; background:none; color:inherit}
+button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;
+}
+textarea, input, select{font-family:inherit; color:var(--ink)}
+[dir="ltr"], .en{direction:ltr; text-align:left}
+.en{font-family:var(--font-en)}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important; transition:none!important}
+}
+
+/* ============ layout ============ */
+#app{max-width:720px; margin:0 auto; padding:0 16px calc(84px + env(safe-area-inset-bottom))}
+@media(min-width:760px){ #app{padding-bottom:40px} }
+
+header.top{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:18px 2px 14px;
+}
+.brand{display:flex; align-items:center; gap:12px}
+.logo{
+  width:44px; height:44px; border-radius:14px; flex:none;
+  background:var(--accent); color:var(--on-accent);
+  display:grid; place-items:center; font-size:24px; font-weight:800;
+}
+.brand h1{font-size:22px; font-weight:800; letter-spacing:-.2px}
+.brand p{font-size:12.5px; color:var(--muted)}
+.streak-chip{
+  display:flex; align-items:center; gap:6px;
+  background:var(--amber-soft); color:var(--amber);
+  border:1px solid transparent; border-radius:999px; padding:7px 14px;
+  font-weight:700; font-size:14px; white-space:nowrap;
+}
+.streak-chip b{font-size:17px; font-variant-numeric:tabular-nums}
+
+/* tabs */
+nav.tabs{
+  position:fixed; bottom:0; right:0; left:0; z-index:30;
+  background:var(--surface);
+  border-top:1px solid var(--line);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+  display:flex; justify-content:space-around; gap:4px;
+}
+nav.tabs button{
+  flex:1; max-width:130px;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:7px 4px; border-radius:12px;
+  color:var(--muted); font-size:12px; font-weight:600;
+}
+nav.tabs button svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+nav.tabs button.active{color:var(--accent); background:var(--accent-soft)}
+@media(min-width:760px){
+  nav.tabs{
+    position:static; border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:20px; box-shadow:var(--shadow); padding:6px;
+  }
+  nav.tabs button{flex-direction:row; gap:8px; font-size:14px; padding:10px}
+}
+
+main section.view{display:none}
+main section.view.active{display:block; animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+
+/* ============ components ============ */
+.card{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  padding:18px; margin-bottom:14px;
+}
+.view-head{margin:4px 2px 14px}
+.view-head h2{font-size:19px; font-weight:800}
+.view-head p{color:var(--muted); font-size:13.5px; margin-top:2px}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border-radius:12px; padding:12px 20px; font-weight:700; font-size:15px;
+  transition:transform .08s ease, opacity .15s;
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent); color:var(--on-accent)}
+.btn-ghost{background:var(--surface2); color:var(--ink); border:1px solid var(--line)}
+.btn-soft{background:var(--accent-soft); color:var(--accent)}
+.btn[disabled]{opacity:.55; cursor:not-allowed}
+.btn-block{width:100%}
+.btn-sm{padding:8px 14px; font-size:13.5px; border-radius:10px}
+
+.spinner{
+  width:16px; height:16px; border-radius:50%;
+  border:2.5px solid currentColor; border-top-color:transparent;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+textarea.input-en{
+  width:100%; min-height:150px; resize:vertical;
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:14px; font-size:16px; line-height:1.6; font-family:var(--font-en);
+  direction:ltr; text-align:left;
+}
+textarea.input-en::placeholder{color:var(--muted); opacity:.75}
+.field-foot{display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:12.5px; margin-top:8px}
+
+.notice{
+  border-radius:12px; padding:12px 14px; font-size:14px; line-height:1.7;
+  background:var(--amber-soft); color:var(--amber); margin-bottom:14px;
+}
+.notice.err{background:var(--danger-soft); color:var(--danger)}
+.hidden{display:none!important}
+
+/* correction results */
+.result-block{margin-top:16px}
+.result-label{
+  display:inline-block; font-size:12px; font-weight:800; letter-spacing:.4px;
+  color:var(--accent); background:var(--accent-soft);
+  border-radius:999px; padding:3px 12px; margin-bottom:8px;
+}
+.en-panel{
+  background:var(--surface2); border:1px solid var(--line); border-radius:12px;
+  padding:14px; font-family:var(--font-en); direction:ltr; text-align:left;
+  font-size:15.5px; line-height:1.7; white-space:pre-wrap; word-break:break-word;
+}
+.praise{
+  display:flex; gap:10px; align-items:flex-start;
+  background:var(--good-soft); color:var(--good);
+  border-radius:12px; padding:12px 14px; font-size:14.5px; font-weight:600;
+}
+.err-item{
+  border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px;
+  background:var(--surface);
+}
+.err-item .pair{display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; direction:ltr; justify-content:flex-start}
+.err-item .wrong{
+  font-family:var(--font-en); background:var(--danger-soft); color:var(--danger);
+  padding:2px 8px; border-radius:7px; text-decoration:line-through; font-size:14.5px;
+}
+.err-item .right{
+  font-family:var(--font-en); background:var(--good-soft); color:var(--good);
+  padding:2px 8px; border-radius:7px; font-weight:700; font-size:14.5px;
+}
+.err-item .arrow{color:var(--muted)}
+.err-item .why{color:var(--ink); font-size:14px; margin-top:8px}
+.err-tag{
+  float:left; font-size:11px; font-weight:700; color:var(--muted);
+  background:var(--surface2); border-radius:999px; padding:2px 10px;
+}
+.copy-row{display:flex; justify-content:flex-end; margin-top:8px}
+
+/* flashcards */
+.chips{display:flex; gap:8px; overflow-x:auto; padding:2px; margin-bottom:14px; scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:none; border-radius:999px; padding:7px 15px; font-size:13.5px; font-weight:700;
+  background:var(--surface); border:1px solid var(--line); color:var(--muted);
+}
+.chip.active{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.flash-stage{perspective:1200px; margin-bottom:14px}
+.flash-card{
+  position:relative; width:100%; min-height:280px; cursor:pointer;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.2,.7,.3,1);
+}
+.flash-card.flipped{transform:rotateY(180deg)}
+.flash-face{
+  position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:22px;
+  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:14px;
+}
+.flash-face.back{transform:rotateY(180deg)}
+.flash-cat{font-size:12px; font-weight:800; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 12px}
+.flash-term{font-family:var(--font-en); direction:ltr; font-size:30px; font-weight:700; letter-spacing:-.3px}
+.flash-ex{font-family:var(--font-en); direction:ltr; color:var(--muted); font-size:15.5px; font-style:italic; max-width:46ch}
+.flash-ar{font-size:19px; font-weight:700; line-height:1.8; max-width:34ch}
+.flash-hint{font-size:12px; color:var(--muted)}
+.flash-known-badge{
+  position:absolute; top:14px; inset-inline-start:14px;
+  font-size:11.5px; font-weight:800; color:var(--good); background:var(--good-soft);
+  border-radius:999px; padding:3px 10px;
+}
+.flash-controls{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
+.flash-progress{text-align:center; color:var(--muted); font-size:13px; margin-top:10px; font-variant-numeric:tabular-nums}
+
+/* interview */
+.q-box{
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+  border-radius:12px; padding:14px 16px;
+  font-family:var(--font-en); direction:ltr; text-align:left;
+  font-size:16.5px; font-weight:600; line-height:1.6; margin-bottom:12px;
+}
+.q-meta{display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap}
+select.q-select{
+  flex:1; min-width:0; background:var(--surface); border:1px solid var(--line);
+  border-radius:10px; padding:10px 12px; font-size:14px; max-width:100%;
+}
+.score-ring{
+  display:flex; align-items:center; gap:14px; background:var(--surface2);
+  border-radius:12px; padding:12px 16px; margin-bottom:12px;
+}
+.score-num{font-size:30px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; direction:ltr}
+.score-num small{font-size:15px; color:var(--muted); font-weight:600}
+
+/* progress */
+.stats-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px}
+@media(min-width:560px){ .stats-grid{grid-template-columns:repeat(4,1fr)} }
+.stat{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:14px; text-align:center;
+}
+.stat b{display:block; font-size:26px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px; color:var(--muted); font-weight:600}
+.days-row{display:flex; gap:6px; justify-content:space-between; margin-top:6px}
+.day-cell{flex:1; text-align:center}
+.day-dot{
+  width:100%; aspect-ratio:1; max-width:34px; margin:0 auto; border-radius:9px;
+  background:var(--surface2); border:1px solid var(--line);
+  display:grid; place-items:center; font-size:11px; color:var(--muted); font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.day-dot.hit{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.day-name{font-size:10.5px; color:var(--muted); margin-top:4px}
+.settings-row{display:flex; flex-direction:column; gap:10px}
+.settings-row input{
+  width:100%; background:var(--surface2); border:1px solid var(--line);
+  border-radius:10px; padding:11px 13px; font-size:14px; direction:ltr; text-align:left;
+}
+.muted-note{color:var(--muted); font-size:12.5px; line-height:1.7}
+.danger-link{color:var(--danger); font-weight:700; font-size:13.5px}
+footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22px 0 8px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header class="top">
+    <div class="brand">
+      <span class="logo">م</span>
+      <div>
+        <h1>مِران</h1>
+        <p>تدريبك اليومي للإنجليزية المهنية</p>
       </div>
     </div>
-    <div class="topbar-actions">
-      <button id="themeToggle" class="icon-btn" title="Toggle light / dark theme" aria-label="Toggle theme">🌙</button>
-    </div>
+    <div class="streak-chip" title="أيام التدريب المتتالية">🔥 <b id="streakNum">0</b> <span>يوم</span></div>
   </header>
 
-  <main id="app">
+  <nav class="tabs" aria-label="التنقل الرئيسي">
+    <button data-view="write" class="active">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      <span>كتابة</span>
+    </button>
+    <button data-view="cards">
+      <svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/></svg>
+      <span>بطاقات</span>
+    </button>
+    <button data-view="interview">
+      <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Z"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>
+      <span>مقابلات</span>
+    </button>
+    <button data-view="progress">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+      <span>تقدمي</span>
+    </button>
+  </nav>
 
-    <!-- ============================ HOME ============================ -->
-    <section id="home" class="screen active">
-      <div class="hero">
-        <h1>Master the <span class="grad">Big Data</span> exam.</h1>
-        <p class="sub">269 multiple-choice questions across 12 lectures. Learn with instant feedback and explanations, or simulate the real test and get scored.</p>
+  <main>
+
+    <!-- ============ writing ============ -->
+    <section id="view-write" class="view active">
+      <div class="view-head">
+        <h2>تدريب الكتابة</h2>
+        <p>اكتب أي نص بالإنجليزي — إيميل، منشور LinkedIn، وصف مشروع — وسأصحح لك وأشرح كل خطأ بالعربي.</p>
       </div>
-
-      <!-- Mode selection -->
-      <div class="mode-row">
-        <button class="mode-card" data-mode="training" id="modeTraining">
-          <div class="mode-ico">🎓</div>
-          <h3>Training Mode</h3>
-          <p>See the correct answer and an explanation immediately after each question. No pressure, pure learning.</p>
-          <span class="mode-pill">Instant feedback</span>
-        </button>
-        <button class="mode-card" data-mode="test" id="modeTest">
-          <div class="mode-ico">📝</div>
-          <h3>Test Mode</h3>
-          <p>Answer first, score at the end. Timed-feel exam simulation with a full review afterwards.</p>
-          <span class="mode-pill">Scored at the end</span>
-        </button>
-      </div>
-
-      <!-- Selected mode banner -->
-      <div class="selected-banner" id="selectedBanner">
-        <span>Selected mode:</span> <strong id="selectedModeText">Training</strong>
-      </div>
-
-      <!-- Scope selection -->
-      <div class="section-head">
-        <h2>Pick your scope</h2>
-        <p>Tap one or more lectures to combine them — or pick the whole bank — then start.</p>
-      </div>
-
-      <div class="scope-controls">
-        <button class="chip chip-all active" data-scope="all">⚡ All lectures · 269 Q</button>
-        <button class="chip" data-scope="random25">🎲 Quick 25 (random)</button>
-        <button class="chip" data-scope="random50">🎲 Quick 50 (random)</button>
-      </div>
-
-      <div class="lectures-grid" id="lecturesGrid"><!-- lecture cards injected --></div>
-
-      <!-- options -->
-      <div class="start-options">
-        <label class="switch">
-          <input type="checkbox" id="shuffleQuestions" />
-          <span class="slider"></span>
-          <span class="switch-label">Shuffle questions</span>
-        </label>
-        <label class="switch">
-          <input type="checkbox" id="shuffleOptions" />
-          <span class="slider"></span>
-          <span class="switch-label">Shuffle answer options</span>
-        </label>
-      </div>
-
-      <div class="start-bar">
-        <div class="start-summary" id="startSummary">All lectures · Training mode · 315 questions</div>
-        <button class="btn-primary" id="startBtn">Start →</button>
-      </div>
-    </section>
-
-    <!-- ============================ QUIZ ============================ -->
-    <section id="quiz" class="screen">
-      <div class="quiz-head">
-        <button class="link-btn" id="quitBtn">← Quit</button>
-        <div class="quiz-meta">
-          <span class="badge badge-mode" id="quizModeBadge">Training</span>
-          <span class="badge" id="quizLecBadge">Lec 2</span>
-          <span class="badge badge-clo" id="quizCloBadge">CLO 1.1</span>
+      <div id="aiNotice" class="notice hidden"></div>
+      <div class="card">
+        <textarea id="writeInput" class="input-en" placeholder="Example: I am writing to apply for the data analyst position. I have strong skill in Python and I done many projects..."></textarea>
+        <div class="field-foot">
+          <span id="writeCount">0 كلمة</span>
+          <button class="btn btn-ghost btn-sm" id="writeSample">جرّب نصاً جاهزاً</button>
         </div>
-        <div class="quiz-score" id="quizScore">Score: 0</div>
-      </div>
-
-      <div class="progress-wrap">
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-        <div class="progress-text" id="progressText">Question 1 of 315</div>
-      </div>
-
-      <div class="question-card">
-        <div class="q-number" id="qNumber">Q87</div>
-        <h2 class="q-text" id="qText">Question text…</h2>
-        <div class="options" id="optionsList"><!-- options injected --></div>
-
-        <div class="feedback" id="feedback" hidden>
-          <div class="feedback-head" id="feedbackHead"></div>
-          <div class="feedback-body" id="feedbackBody"></div>
+        <div style="margin-top:12px">
+          <button class="btn btn-primary btn-block" id="writeGo">صحّح نصي واشرح لي</button>
         </div>
       </div>
-
-      <div class="quiz-foot">
-        <button class="btn-ghost" id="prevBtn">← Previous</button>
-        <div class="dots" id="dots"></div>
-        <button class="btn-primary" id="nextBtn">Next →</button>
-      </div>
+      <div id="writeResult"></div>
     </section>
 
-    <!-- ============================ RESULTS ============================ -->
-    <section id="results" class="screen">
-      <div class="results-hero">
-        <div class="score-ring" id="scoreRing">
-          <svg viewBox="0 0 120 120">
-            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
-            <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"></circle>
-          </svg>
-          <div class="score-ring-text">
-            <span class="score-pct" id="scorePct">0%</span>
-            <span class="score-frac" id="scoreFrac">0 / 0</span>
+    <!-- ============ flashcards ============ -->
+    <section id="view-cards" class="view">
+      <div class="view-head">
+        <h2>مفردات يومية</h2>
+        <p>بطاقات لمصطلحات علم البيانات والإنجليزية المهنية. اضغط البطاقة لقلبها.</p>
+      </div>
+      <div class="chips" id="catChips"></div>
+      <div class="flash-stage">
+        <div class="flash-card" id="flashCard" role="button" tabindex="0" aria-label="بطاقة تعليمية — اضغط للقلب">
+          <div class="flash-face front">
+            <span class="flash-cat" id="fcCat"></span>
+            <div class="flash-term en" id="fcTerm"></div>
+            <div class="flash-ex" id="fcEx"></div>
+            <span class="flash-hint">اضغط لعرض المعنى</span>
           </div>
+          <div class="flash-face back">
+            <span class="flash-cat">المعنى</span>
+            <div class="flash-ar" id="fcAr"></div>
+            <div class="flash-ex" id="fcExBack"></div>
+            <span class="flash-hint">اضغط للرجوع</span>
+          </div>
+          <span class="flash-known-badge hidden" id="fcKnown">✓ أعرفها</span>
         </div>
-        <h1 id="resultsTitle">Nice work!</h1>
-        <p class="sub" id="resultsSub">Here's how you did.</p>
       </div>
-
-      <div class="results-stats" id="resultsStats"><!-- stat tiles --></div>
-
-      <div class="section-head">
-        <h2>Breakdown by lecture</h2>
+      <div class="flash-controls">
+        <button class="btn btn-ghost btn-sm" id="fcPrev">السابقة</button>
+        <button class="btn btn-soft btn-sm" id="fcMark">أعرفها ✓</button>
+        <button class="btn btn-ghost btn-sm" id="fcShuffle">خلط 🔀</button>
+        <button class="btn btn-primary btn-sm" id="fcNext">التالية</button>
       </div>
-      <div class="lec-breakdown" id="lecBreakdown"></div>
+      <p class="flash-progress" id="fcProgress"></p>
+    </section>
 
-      <div class="results-actions">
-        <button class="btn-primary" id="reviewBtn">Review answers</button>
-        <button class="btn-ghost" id="retryWrongBtn">Retry wrong only</button>
-        <button class="btn-ghost" id="againBtn">New session</button>
+    <!-- ============ interview ============ -->
+    <section id="view-interview" class="view">
+      <div class="view-head">
+        <h2>تدريب المقابلات</h2>
+        <p>أسئلة مقابلات شائعة لوظائف علم البيانات. اكتب إجابتك بالإنجليزي وسأقيّمها لغوياً وأعطيك نسخة أقوى.</p>
       </div>
+      <div class="card">
+        <div class="q-meta">
+          <select class="q-select" id="qSelect" aria-label="اختر سؤال المقابلة"></select>
+          <button class="btn btn-soft btn-sm" id="qRandom">🎲 عشوائي</button>
+        </div>
+        <div class="q-box" id="qBox"></div>
+        <textarea id="ivInput" class="input-en" placeholder="Write your answer in English..."></textarea>
+        <div class="field-foot"><span id="ivCount">0 كلمة</span></div>
+        <div style="margin-top:12px">
+          <button class="btn btn-primary btn-block" id="ivGo">قيّم إجابتي</button>
+        </div>
+      </div>
+      <div id="ivResult"></div>
+    </section>
 
-      <!-- review list -->
-      <div class="review-list" id="reviewList" hidden></div>
+    <!-- ============ progress ============ -->
+    <section id="view-progress" class="view">
+      <div class="view-head">
+        <h2>تقدمي</h2>
+        <p>استمراريتك أهم من الكمية — تمرين واحد يومياً يحافظ على السلسلة.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat"><b id="stStreak">0</b><span>🔥 أيام متتالية</span></div>
+        <div class="stat"><b id="stTotal">0</b><span>تمارين منجزة</span></div>
+        <div class="stat"><b id="stWrite">0</b><span>تصحيحات كتابة</span></div>
+        <div class="stat"><b id="stIv">0</b><span>إجابات مقابلات</span></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:10px">آخر ٧ أيام</h3>
+        <div class="days-row" id="daysRow"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:6px">المفردات</h3>
+        <p class="muted-note">حفظت <b id="stKnown">0</b> من أصل <b id="stCardsTotal">0</b> بطاقة.</p>
+      </div>
+      <div class="card" id="apiKeyCard">
+        <h3 style="font-size:15px; margin-bottom:6px">إعداد الذكاء الاصطناعي</h3>
+        <p class="muted-note" style="margin-bottom:10px" id="apiKeyNote"></p>
+        <div class="settings-row">
+          <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
+          <button class="btn btn-soft btn-sm" id="apiKeySave">حفظ المفتاح</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:6px">البيانات</h3>
+        <p class="muted-note" style="margin-bottom:10px" id="storageNote"></p>
+        <button class="danger-link" id="resetAll">تصفير كل بياناتي</button>
+      </div>
+      <footer class="credit">مِران — صُنع لتطوير إنجليزيتك المهنية خطوة بخطوة</footer>
     </section>
 
   </main>
+</div>
 
-  <footer class="footer">
-    <span>DS4511 Big Data · Interactive Test Bank</span>
-    <span>Built for studying — answers &amp; explanations included</span>
-  </footer>
+<script>
+'use strict';
+/* ensure RTL even when served inside a wrapper that doesn't set it */
+document.documentElement.setAttribute('dir','rtl');
+document.documentElement.setAttribute('lang','ar');
 
-  <script src="js/questions.js"></script>
-  <script src="js/app.js"></script>
+/* ==================================================================
+   data — flashcards
+================================================================== */
+const CATS = {
+  ds:   'علم البيانات',
+  iv:   'لغة المقابلات',
+  mail: 'إيميلات وكتابة',
+  work: 'إنجليزية العمل',
+};
+const CARDS = [
+  {c:'ds', en:'overfitting', ex:'The model suffers from overfitting, so it performs poorly on new data.', ar:'فرط التخصيص: النموذج يحفظ بيانات التدريب ويفشل في التعميم على بيانات جديدة'},
+  {c:'ds', en:'feature engineering', ex:'Good feature engineering improved our model’s accuracy significantly.', ar:'هندسة الخصائص: إنشاء متغيرات مفيدة من البيانات الخام'},
+  {c:'ds', en:'outlier', ex:'We removed the outliers before training the model.', ar:'قيمة شاذة تختلف كثيراً عن باقي البيانات'},
+  {c:'ds', en:'data pipeline', ex:'I built an automated data pipeline that runs every night.', ar:'سلسلة معالجة البيانات من المصدر حتى النتيجة النهائية'},
+  {c:'ds', en:'baseline', ex:'Always compare your model against a simple baseline.', ar:'نموذج مرجعي بسيط تُقاس عليه أي نتائج لاحقة'},
+  {c:'ds', en:'hyperparameter tuning', ex:'Hyperparameter tuning took longer than expected.', ar:'ضبط المعاملات الفائقة لتحسين أداء النموذج'},
+  {c:'ds', en:'cross-validation', ex:'We used 5-fold cross-validation to evaluate the model.', ar:'التحقق المتقاطع: تقييم النموذج بتقسيم البيانات عدة مرات'},
+  {c:'ds', en:'imbalanced data', ex:'Fraud detection usually involves highly imbalanced data.', ar:'بيانات غير متوازنة: فئة تطغى على الأخرى بشكل كبير'},
+  {c:'ds', en:'data leakage', ex:'Data leakage made our results look better than they really were.', ar:'تسرب البيانات: معلومات من بيانات الاختبار تتسرب إلى التدريب'},
+  {c:'ds', en:'inference', ex:'The model takes 50 milliseconds per inference.', ar:'الاستدلال: استخدام النموذج للتنبؤ بعد تدريبه'},
+  {c:'ds', en:'deployment', ex:'We deployed the model to production last week.', ar:'نشر النموذج ليُستخدم فعلياً في بيئة الإنتاج'},
+  {c:'ds', en:'stakeholder', ex:'I presented the findings to the key stakeholders.', ar:'أصحاب المصلحة: الأشخاص المستفيدون من نتائج عملك'},
+  {c:'ds', en:'actionable insights', ex:'Our dashboard turns raw data into actionable insights.', ar:'رؤى قابلة للتنفيذ تُبنى عليها قرارات عملية'},
+  {c:'ds', en:'trade-off', ex:'There is a trade-off between model accuracy and interpretability.', ar:'موازنة بين خيارين متعارضين، كسبُ أحدهما على حساب الآخر'},
+  {c:'ds', en:'scalable', ex:'We need a scalable solution that handles millions of rows.', ar:'قابل للتوسع مع نمو حجم البيانات أو المستخدمين'},
+  {c:'ds', en:'exploratory data analysis', ex:'I always start with exploratory data analysis (EDA).', ar:'التحليل الاستكشافي: فهم البيانات قبل بناء أي نموذج'},
+  {c:'iv', en:'I’m a recent graduate in…', ex:'I’m a recent data science graduate with hands-on project experience.', ar:'صيغة احترافية لتقديم نفسك كخريج جديد في بداية المقابلة'},
+  {c:'iv', en:'hands-on experience', ex:'I gained hands-on experience through my graduation project.', ar:'خبرة عملية مباشرة (وليست نظرية فقط)'},
+  {c:'iv', en:'My strength lies in…', ex:'My strength lies in translating data into clear decisions.', ar:'صيغة قوية للحديث عن نقاط قوتك بدون مبالغة'},
+  {c:'iv', en:'problem-solving skills', ex:'This project sharpened my problem-solving skills.', ar:'مهارات حل المشكلات — من أكثر العبارات طلباً في المقابلات'},
+  {c:'iv', en:'I’m eager to…', ex:'I’m eager to grow within a data-driven team.', ar:'متحمس وجاد في رغبتي أن… (أنسب من excited في السياق الرسمي)'},
+  {c:'iv', en:'collaborate', ex:'I collaborated with the marketing team to define the KPIs.', ar:'تعاونتُ مع — فعل أساسي عند الحديث عن العمل الجماعي'},
+  {c:'iv', en:'take ownership', ex:'I took ownership of the entire analysis phase.', ar:'تحمّلت المسؤولية الكاملة عن مهمة — تعبير يحبه المقابلون'},
+  {c:'iv', en:'overcome a challenge', ex:'The biggest challenge I overcame was cleaning messy real-world data.', ar:'تغلبت على تحدٍ — أساسية لأسئلة المواقف السلوكية'},
+  {c:'iv', en:'That’s a great question…', ex:'That’s a great question — let me think it through.', ar:'عبارة لبقة لكسب ثوانٍ للتفكير أثناء المقابلة'},
+  {c:'iv', en:'walk you through', ex:'Let me walk you through my approach step by step.', ar:'أشرح لك بالتفصيل خطوة بخطوة — مثالية لشرح مشاريعك'},
+  {c:'iv', en:'KPI (key performance indicator)', ex:'We chose retention rate as our main KPI.', ar:'مؤشر أداء رئيسي يُقاس به نجاح العمل'},
+  {c:'iv', en:'follow up on', ex:'I’d like to follow up on your question about deployment.', ar:'أعقّب على / أرجع لنقطة سابقة'},
+  {c:'mail', en:'I hope this email finds you well', ex:'Dear Ms. Sarah, I hope this email finds you well.', ar:'تحية افتتاحية رسمية شائعة جداً في الإيميلات'},
+  {c:'mail', en:'I am writing to…', ex:'I am writing to apply for the Data Analyst position.', ar:'أكتب إليكم بخصوص… — افتتاحية مباشرة توضح هدف الإيميل'},
+  {c:'mail', en:'Please find attached…', ex:'Please find attached my resume and portfolio.', ar:'تجدون مرفقاً… — الصيغة القياسية للمرفقات'},
+  {c:'mail', en:'I would appreciate…', ex:'I would appreciate the opportunity to discuss my application.', ar:'سأكون ممتناً لو… — طلب مهذب وغير مباشر'},
+  {c:'mail', en:'Looking forward to hearing from you', ex:'Looking forward to hearing from you soon.', ar:'بانتظار ردكم — خاتمة مهنية لطيفة'},
+  {c:'mail', en:'Best regards', ex:'Best regards,\nMohammed', ar:'مع أطيب التحيات — الخاتمة الرسمية الأكثر أماناً'},
+  {c:'mail', en:'following up on', ex:'I’m following up on my previous email regarding the interview.', ar:'أتابع معكم بخصوص… — للتذكير بدون إحراج'},
+  {c:'mail', en:'Could you please clarify…?', ex:'Could you please clarify the project requirements?', ar:'هل يمكنكم توضيح…؟ — سؤال مهذب عند الغموض'},
+  {c:'mail', en:'Apologies for the delay', ex:'Apologies for the delayed response.', ar:'اعتذار مهني مختصر عن التأخير — بدون مبالغة'},
+  {c:'mail', en:'reach out', ex:'Feel free to reach out if you have any questions.', ar:'تواصل مع — بديل عصري واحترافي لكلمة contact'},
+  {c:'mail', en:'to summarize', ex:'To summarize, we agreed on three main deliverables.', ar:'للتلخيص — مفيدة في نهاية الإيميلات والاجتماعات'},
+  {c:'mail', en:'deliverable', ex:'The final deliverable is a dashboard and a short report.', ar:'مُخرَج نهائي يُسلَّم في نهاية العمل أو المشروع'},
+  {c:'work', en:'deadline', ex:'We’re on track to meet the deadline.', ar:'الموعد النهائي للتسليم'},
+  {c:'work', en:'on track', ex:'The project is on track and will finish on time.', ar:'يسير حسب الخطة'},
+  {c:'work', en:'bottleneck', ex:'Data collection was the main bottleneck in the project.', ar:'عنق الزجاجة: النقطة التي تبطئ سير العمل كله'},
+  {c:'work', en:'align on', ex:'Let’s align on the goals before we start.', ar:'نتفق ونوحّد الرؤية حول نقطة معينة'},
+  {c:'work', en:'bandwidth', ex:'I don’t have the bandwidth to take this on this week.', ar:'الوقت أو الطاقة المتاحة لعمل إضافي (استخدام مجازي)'},
+  {c:'work', en:'heads-up', ex:'Just a heads-up: the meeting moved to 3 PM.', ar:'تنبيه مسبق ودّي قبل حدوث شيء'},
+  {c:'work', en:'touch base', ex:'Let’s touch base tomorrow morning.', ar:'نتواصل سريعاً للاطمئنان على سير العمل'},
+  {c:'work', en:'key takeaway', ex:'The key takeaway from the analysis is that churn is seasonal.', ar:'الخلاصة أو أهم استنتاج'},
+  {c:'work', en:'leverage', ex:'We can leverage existing data instead of collecting new data.', ar:'نستفيد من / نوظّف شيئاً موجوداً لتحقيق نتيجة'},
+  {c:'work', en:'streamline', ex:'This script streamlines the reporting process.', ar:'يبسّط ويسرّع عملية كانت معقدة'},
+];
+
+/* interview questions */
+const QUESTIONS = [
+  {t:'عن نفسك', q:'Tell me about yourself.'},
+  {t:'الدافع', q:'Why do you want to work as a data scientist?'},
+  {t:'مشروع', q:'Walk me through a data project you are proud of.'},
+  {t:'تبسيط تقني', q:'How would you explain machine learning to a non-technical manager?'},
+  {t:'موقف', q:'Describe a time you faced a difficult problem. How did you solve it?'},
+  {t:'تقني', q:'What is overfitting, and how do you prevent it?'},
+  {t:'تقني', q:'How do you handle missing data in a dataset?'},
+  {t:'خريج جديد', q:'Why should we hire you as a fresh graduate?'},
+  {t:'عمل جماعي', q:'Tell me about a time you worked in a team.'},
+  {t:'تواصل', q:'How do you present a complex analysis to stakeholders?'},
+  {t:'نقاط القوة', q:'What are your strengths and weaknesses?'},
+  {t:'الطموح', q:'Where do you see yourself in five years?'},
+];
+
+const SAMPLE_TEXT = "Dear hiring manager, I am recently graduate from data science and I am interesting in the data analyst position in your company. I have did several projects in machine learning and I know python very good. I am hard worker and I can learn fastly. Please look to my CV in the attachment. Waiting your reply.";
+
+/* ==================================================================
+   storage — window.storage → localStorage → memory
+================================================================== */
+const memStore = {};
+async function rawGet(key){
+  try{
+    const s = window.storage;
+    if (s && typeof s.getItem === 'function'){ const v = await s.getItem(key); return (v && typeof v === 'object' && 'value' in v) ? v.value : v; }
+    if (s && typeof s.get === 'function'){ const v = await s.get(key); return (v && typeof v === 'object' && 'value' in v) ? v.value : v; }
+  }catch(e){}
+  try{ return localStorage.getItem(key); }catch(e){}
+  return (key in memStore) ? memStore[key] : null;
+}
+async function rawSet(key, val){
+  try{
+    const s = window.storage;
+    if (s && typeof s.setItem === 'function'){ await s.setItem(key, val); return 'storage'; }
+    if (s && typeof s.set === 'function'){ await s.set(key, val); return 'storage'; }
+  }catch(e){}
+  try{ localStorage.setItem(key, val); return 'local'; }catch(e){}
+  memStore[key] = val; return 'memory';
+}
+const STORE_KEY = 'miran.v1';
+let storageMode = 'memory';
+
+/* ==================================================================
+   state
+================================================================== */
+const state = {
+  streakCount: 0,
+  lastDate: null,          // 'YYYY-MM-DD' of last completed exercise
+  totals: { write:0, iv:0 },
+  history: {},             // {'YYYY-MM-DD': n}
+  known: [],               // english terms marked as known
+  apiKey: '',
+};
+
+function todayStr(offset=0){
+  const d = new Date(); d.setDate(d.getDate()+offset);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function effectiveStreak(){
+  if (!state.lastDate) return 0;
+  if (state.lastDate === todayStr() || state.lastDate === todayStr(-1)) return state.streakCount;
+  return 0;
+}
+async function saveState(){
+  storageMode = await rawSet(STORE_KEY, JSON.stringify(state));
+}
+async function loadState(){
+  const raw = await rawGet(STORE_KEY);
+  if (raw){
+    try{ Object.assign(state, JSON.parse(raw)); }catch(e){}
+  }
+  // detect where a save would land, for the settings note
+  storageMode = await rawSet(STORE_KEY+'.probe', '1');
+}
+function recordExercise(kind){
+  const t = todayStr();
+  if (state.lastDate !== t){
+    state.streakCount = (state.lastDate === todayStr(-1)) ? state.streakCount + 1 : 1;
+    state.lastDate = t;
+  }
+  state.totals[kind] = (state.totals[kind]||0) + 1;
+  state.history[t] = (state.history[t]||0) + 1;
+  saveState();
+  renderHeader(); renderProgress();
+}
+
+/* ==================================================================
+   AI bridge — window.claude.complete → direct API (with key)
+================================================================== */
+const API_MODEL = 'claude-opus-4-8';
+function hasArtifactAI(){ return !!(window.claude && typeof window.claude.complete === 'function'); }
+function hasAI(){ return hasArtifactAI() || !!state.apiKey; }
+
+async function askClaude(prompt){
+  if (hasArtifactAI()){
+    return await window.claude.complete(prompt);
+  }
+  if (state.apiKey){
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'content-type':'application/json',
+        'x-api-key': state.apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+      },
+      body: JSON.stringify({ model: API_MODEL, max_tokens: 3000, messages:[{role:'user', content: prompt}] }),
+    });
+    if (!res.ok){
+      const body = await res.text().catch(()=> '');
+      throw new Error('API '+res.status+': '+body.slice(0,200));
+    }
+    const data = await res.json();
+    if (data.stop_reason === 'refusal') throw new Error('refused');
+    return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+  }
+  throw new Error('no-ai');
+}
+
+function extractJSON(text){
+  let t = String(text).trim();
+  t = t.replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'');
+  const a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if (a === -1 || b === -1) throw new Error('bad-json');
+  return JSON.parse(t.slice(a, b+1));
+}
+
+const LEARNER_CONTEXT = `You are an expert English coach for Arabic speakers. The learner is Mohammed, a Saudi data-science graduate with intermediate English. His goal is practical professional English: job interviews, work emails, LinkedIn, and data-science vocabulary. All explanations MUST be in clear, simple Arabic (Saudi-friendly Modern Standard Arabic). Be encouraging but direct — point out real mistakes honestly.`;
+
+const JSON_RULES = `Respond with ONLY a valid JSON object. No markdown, no code fences, no text before or after the JSON. Escape newlines inside strings as \\n.`;
+
+/* ==================================================================
+   helpers
+================================================================== */
+const $ = (id)=>document.getElementById(id);
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function wordCount(s){ return (s.trim().match(/\S+/g)||[]).length; }
+function setLoading(btn, on, label){
+  if (on){ btn.dataset.label = btn.textContent; btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> '+label; }
+  else { btn.disabled = false; btn.textContent = btn.dataset.label || btn.textContent; }
+}
+function errorsHTML(errors){
+  if (!errors || !errors.length){
+    return '<div class="praise">👏 ما لقيت أخطاء واضحة تستحق التصحيح — نصك سليم!</div>';
+  }
+  const typeAr = {grammar:'قواعد', vocabulary:'اختيار كلمات', style:'أسلوب', spelling:'إملاء', punctuation:'ترقيم'};
+  return errors.map(e=>`
+    <div class="err-item">
+      <span class="err-tag">${esc(typeAr[e.type]||e.type||'ملاحظة')}</span>
+      <div class="pair">
+        <span class="wrong">${esc(e.original)}</span>
+        <span class="arrow">←</span>
+        <span class="right">${esc(e.correction)}</span>
+      </div>
+      <p class="why">${esc(e.explanation_ar)}</p>
+    </div>`).join('');
+}
+function copyBtn(text){
+  const id = 'cp'+Math.random().toString(36).slice(2,8);
+  setTimeout(()=>{
+    const b = $(id); if(!b) return;
+    b.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(text); b.textContent='✓ نُسخ'; setTimeout(()=>b.textContent='نسخ النص',1500); }catch(e){}
+    });
+  },0);
+  return `<div class="copy-row"><button class="btn btn-ghost btn-sm" id="${id}">نسخ النص</button></div>`;
+}
+function aiErrorHTML(err){
+  let msg = 'صار خطأ أثناء الاتصال بالذكاء الاصطناعي. جرّب مرة ثانية بعد لحظات.';
+  if (err && err.message === 'no-ai') msg = 'ميزات الذكاء الاصطناعي غير متاحة هنا. افتح التطبيق داخل Claude، أو أضف مفتاح API من تبويب «تقدمي».';
+  if (err && err.message === 'bad-json') msg = 'وصلني رد غير مكتمل من النموذج. أعد المحاولة — غالباً تنجح من ثاني مرة.';
+  if (err && err.message === 'refused') msg = 'النموذج اعتذر عن هذا الطلب. جرّب صياغة النص بشكل مختلف.';
+  return `<div class="notice err">${esc(msg)}</div>`;
+}
+
+/* ==================================================================
+   navigation
+================================================================== */
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b===btn));
+    document.querySelectorAll('main .view').forEach(v=>v.classList.remove('active'));
+    $('view-'+btn.dataset.view).classList.add('active');
+    window.scrollTo({top:0});
+  });
+});
+
+/* ==================================================================
+   writing view
+================================================================== */
+$('writeInput').addEventListener('input', ()=>{ $('writeCount').textContent = wordCount($('writeInput').value)+' كلمة'; });
+$('writeSample').addEventListener('click', ()=>{
+  $('writeInput').value = SAMPLE_TEXT;
+  $('writeInput').dispatchEvent(new Event('input'));
+});
+
+$('writeGo').addEventListener('click', async ()=>{
+  const text = $('writeInput').value.trim();
+  const out = $('writeResult');
+  if (wordCount(text) < 5){ out.innerHTML = '<div class="notice">اكتب ٥ كلمات على الأقل عشان أقدر أساعدك 🙂</div>'; return; }
+  setLoading($('writeGo'), true, 'جاري التصحيح…');
+  out.innerHTML = '';
+  const prompt = `${LEARNER_CONTEXT}
+
+Analyze this English text written by the learner and correct it.
+
+TEXT:
+<<<${text}>>>
+
+${JSON_RULES}
+Schema:
+{
+ "praise_ar": "جملة تشجيع قصيرة بالعربي تذكر شيئاً جيداً فعله فعلاً في النص",
+ "errors": [
+   {"original": "the exact wrong phrase from the text", "correction": "the corrected phrase", "type": "grammar|vocabulary|style|spelling|punctuation", "explanation_ar": "شرح عربي واضح ومختصر لسبب الخطأ وكيف يتجنبه مستقبلاً"}
+ ],
+ "corrected": "the learner's text with only the errors fixed (minimal changes)",
+ "professional": "a rewritten version that sounds natural and professional for a work context",
+ "tip_ar": "نصيحة عامة واحدة بالعربي مبنية على نمط أخطائه في هذا النص"
+}`;
+  try{
+    const raw = await askClaude(prompt);
+    const r = extractJSON(raw);
+    out.innerHTML = `
+      <div class="card">
+        <div class="praise">🌟 ${esc(r.praise_ar||'')}</div>
+        <div class="result-block">
+          <span class="result-label">الأخطاء والشرح (${(r.errors||[]).length})</span>
+          ${errorsHTML(r.errors)}
+        </div>
+        <div class="result-block">
+          <span class="result-label">نصك بعد التصحيح</span>
+          <div class="en-panel">${esc(r.corrected||'')}</div>
+        </div>
+        <div class="result-block">
+          <span class="result-label">صياغة أكثر احترافية ✨</span>
+          <div class="en-panel">${esc(r.professional||'')}</div>
+          ${copyBtn(r.professional||'')}
+        </div>
+        <div class="result-block">
+          <span class="result-label">نصيحة لك</span>
+          <p style="font-size:14.5px">${esc(r.tip_ar||'')}</p>
+        </div>
+      </div>`;
+    recordExercise('write');
+  }catch(err){
+    out.innerHTML = aiErrorHTML(err);
+  }finally{
+    setLoading($('writeGo'), false);
+    out.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+});
+
+/* ==================================================================
+   flashcards view
+================================================================== */
+let deck = [...CARDS];
+let deckPos = 0;
+let activeCat = 'all';
+
+function buildChips(){
+  const chips = [['all','الكل ('+CARDS.length+')'], ...Object.entries(CATS).map(([k,v])=>[k, v+' ('+CARDS.filter(c=>c.c===k).length+')'])];
+  $('catChips').innerHTML = chips.map(([k,label])=>`<button class="chip ${k===activeCat?'active':''}" data-cat="${k}">${label}</button>`).join('');
+  $('catChips').querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click', ()=>{
+    activeCat = ch.dataset.cat;
+    deck = activeCat==='all' ? [...CARDS] : CARDS.filter(c=>c.c===activeCat);
+    deckPos = 0; buildChips(); renderCard();
+  }));
+}
+function renderCard(){
+  const card = deck[deckPos];
+  const el = $('flashCard');
+  el.classList.remove('flipped');
+  if (!card) return;
+  $('fcCat').textContent = CATS[card.c];
+  $('fcTerm').textContent = card.en;
+  $('fcEx').textContent = '“'+card.ex+'”';
+  $('fcAr').textContent = card.ar;
+  $('fcExBack').textContent = '“'+card.ex+'”';
+  const known = state.known.includes(card.en);
+  $('fcKnown').classList.toggle('hidden', !known);
+  $('fcMark').textContent = known ? 'إلغاء ✓' : 'أعرفها ✓';
+  const knownInDeck = deck.filter(c=>state.known.includes(c.en)).length;
+  $('fcProgress').textContent = `البطاقة ${deckPos+1} من ${deck.length} · تعرف ${knownInDeck} منها`;
+}
+$('flashCard').addEventListener('click', ()=> $('flashCard').classList.toggle('flipped'));
+$('flashCard').addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); $('flashCard').classList.toggle('flipped'); } });
+$('fcNext').addEventListener('click', ()=>{ deckPos = (deckPos+1)%deck.length; renderCard(); });
+$('fcPrev').addEventListener('click', ()=>{ deckPos = (deckPos-1+deck.length)%deck.length; renderCard(); });
+$('fcShuffle').addEventListener('click', ()=>{
+  for (let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  deckPos=0; renderCard();
+});
+$('fcMark').addEventListener('click', ()=>{
+  const card = deck[deckPos]; if(!card) return;
+  const i = state.known.indexOf(card.en);
+  if (i>=0) state.known.splice(i,1); else state.known.push(card.en);
+  saveState(); renderCard(); renderProgress();
+});
+
+/* ==================================================================
+   interview view
+================================================================== */
+let qIndex = 0;
+function buildQuestions(){
+  $('qSelect').innerHTML = QUESTIONS.map((q,i)=>`<option value="${i}">${i+1}. ${q.t} — ${esc(q.q)}</option>`).join('');
+  $('qSelect').value = String(qIndex);
+  $('qBox').textContent = QUESTIONS[qIndex].q;
+}
+$('qSelect').addEventListener('change', ()=>{ qIndex = +$('qSelect').value; $('qBox').textContent = QUESTIONS[qIndex].q; $('ivResult').innerHTML=''; });
+$('qRandom').addEventListener('click', ()=>{
+  let n; do{ n = Math.floor(Math.random()*QUESTIONS.length); }while(n===qIndex && QUESTIONS.length>1);
+  qIndex = n; buildQuestions(); $('ivResult').innerHTML='';
+});
+$('ivInput').addEventListener('input', ()=>{ $('ivCount').textContent = wordCount($('ivInput').value)+' كلمة'; });
+
+$('ivGo').addEventListener('click', async ()=>{
+  const ans = $('ivInput').value.trim();
+  const out = $('ivResult');
+  if (wordCount(ans) < 8){ out.innerHTML = '<div class="notice">اكتب إجابة من ٨ كلمات على الأقل — تخيّل نفسك فعلاً في المقابلة 🙂</div>'; return; }
+  setLoading($('ivGo'), true, 'جاري التقييم…');
+  out.innerHTML = '';
+  const prompt = `${LEARNER_CONTEXT}
+
+The learner is practicing a data-science job interview. Evaluate his English answer LANGUAGE-wise (grammar, vocabulary, professionalism, clarity) — the technical correctness matters less than the language.
+
+INTERVIEW QUESTION: ${QUESTIONS[qIndex].q}
+
+LEARNER'S ANSWER:
+<<<${ans}>>>
+
+${JSON_RULES}
+Schema:
+{
+ "score": 7,
+ "praise_ar": "جملة تشجيع قصيرة بالعربي عن أقوى شيء في إجابته",
+ "feedback_ar": "تقييم عام بالعربي: ٢-٣ جمل عن مستوى اللغة ووضوح الإجابة كإجابة مقابلة",
+ "errors": [
+   {"original": "wrong phrase", "correction": "fixed phrase", "type": "grammar|vocabulary|style|spelling", "explanation_ar": "شرح عربي مختصر"}
+ ],
+ "improved": "a stronger, natural, professional version of his answer that a hiring manager would love — same ideas, better English, interview-appropriate length",
+ "diff_ar": "شرح بالعربي: أهم ٢-٣ فروقات بين إجابته والنسخة المحسّنة ولماذا هي أقوى"
+}
+score is an integer 1-10 for language quality only.`;
+  try{
+    const raw = await askClaude(prompt);
+    const r = extractJSON(raw);
+    const score = Math.max(1, Math.min(10, parseInt(r.score)||5));
+    out.innerHTML = `
+      <div class="card">
+        <div class="score-ring">
+          <span class="score-num">${score}<small>/10</small></span>
+          <p style="font-size:14px">${esc(r.feedback_ar||'')}</p>
+        </div>
+        <div class="praise">🌟 ${esc(r.praise_ar||'')}</div>
+        <div class="result-block">
+          <span class="result-label">ملاحظات لغوية (${(r.errors||[]).length})</span>
+          ${errorsHTML(r.errors)}
+        </div>
+        <div class="result-block">
+          <span class="result-label">إجابة أقوى تتعلم منها ✨</span>
+          <div class="en-panel">${esc(r.improved||'')}</div>
+          ${copyBtn(r.improved||'')}
+        </div>
+        <div class="result-block">
+          <span class="result-label">وش الفرق؟</span>
+          <p style="font-size:14.5px">${esc(r.diff_ar||'')}</p>
+        </div>
+      </div>`;
+    recordExercise('iv');
+  }catch(err){
+    out.innerHTML = aiErrorHTML(err);
+  }finally{
+    setLoading($('ivGo'), false);
+    out.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+});
+
+/* ==================================================================
+   progress view
+================================================================== */
+const DAY_NAMES = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function renderHeader(){ $('streakNum').textContent = effectiveStreak(); }
+function renderProgress(){
+  $('stStreak').textContent = effectiveStreak();
+  $('stWrite').textContent = state.totals.write||0;
+  $('stIv').textContent = state.totals.iv||0;
+  $('stTotal').textContent = (state.totals.write||0)+(state.totals.iv||0);
+  $('stKnown').textContent = state.known.length;
+  $('stCardsTotal').textContent = CARDS.length;
+  let html = '';
+  for (let i=6;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const n = state.history[key]||0;
+    html += `<div class="day-cell"><div class="day-dot ${n?'hit':''}">${n||''}</div><div class="day-name">${DAY_NAMES[d.getDay()]}</div></div>`;
+  }
+  $('daysRow').innerHTML = html;
+  const modeAr = {storage:'التخزين الدائم متاح ✓ — تقدمك محفوظ بين الجلسات.', local:'تقدمك محفوظ في متصفحك على هذا الجهاز.', memory:'⚠️ التخزين الدائم غير متاح — بياناتك ستُفقد عند إغلاق الصفحة.'};
+  $('storageNote').textContent = modeAr[storageMode];
+}
+function renderAINotice(){
+  const notice = $('aiNotice');
+  if (hasAI()){ notice.classList.add('hidden'); }
+  else {
+    notice.classList.remove('hidden');
+    notice.textContent = 'ميزات التصحيح والتقييم تحتاج اتصالاً بالذكاء الاصطناعي: افتح التطبيق داخل Claude، أو أضف مفتاح Anthropic API من تبويب «تقدمي». البطاقات التعليمية تعمل بدون اتصال.';
+  }
+  // api key card
+  if (hasArtifactAI()){
+    $('apiKeyNote').textContent = 'أنت داخل Claude — الذكاء الاصطناعي يعمل تلقائياً بدون أي إعداد ✓';
+    $('apiKeyInput').parentElement.classList.add('hidden');
+  } else {
+    $('apiKeyNote').textContent = 'أنت خارج Claude، لذلك تحتاج مفتاح Anthropic API لتفعيل التصحيح والتقييم. المفتاح يُحفظ على جهازك فقط.';
+    if (state.apiKey) $('apiKeyInput').value = state.apiKey;
+  }
+}
+$('apiKeySave').addEventListener('click', async ()=>{
+  state.apiKey = $('apiKeyInput').value.trim();
+  await saveState();
+  renderAINotice();
+  $('apiKeySave').textContent = '✓ تم الحفظ';
+  setTimeout(()=> $('apiKeySave').textContent = 'حفظ المفتاح', 1500);
+});
+$('resetAll').addEventListener('click', async ()=>{
+  if (!confirm('متأكد؟ بيتم حذف السلسلة والتمارين والبطاقات المحفوظة.')) return;
+  state.streakCount=0; state.lastDate=null; state.totals={write:0,iv:0}; state.history={}; state.known=[];
+  await saveState();
+  renderHeader(); renderProgress(); renderCard();
+});
+
+/* ==================================================================
+   init
+================================================================== */
+(async function init(){
+  await loadState();
+  buildChips();
+  renderCard();
+  buildQuestions();
+  renderHeader();
+  renderProgress();
+  renderAINotice();
+})();
+</script>
 </body>
 </html>

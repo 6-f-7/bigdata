@@ -34,7 +34,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # The whole repo root is the static site (index.html, css/, js/)
+          # The whole repo root is the static site (index.html)
           path: "."
 
       - name: Deploy to GitHub Pages
