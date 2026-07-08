@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["claude/english-learning-app-635wz4"]
+    branches: ["claude/intelligent-fermi-r3jii4"]
   workflow_dispatch:
 
 permissions:
