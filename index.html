@@ -99,23 +99,30 @@ nav.tabs{
   position:fixed; bottom:0; right:0; left:0; z-index:30;
   background:var(--surface);
   border-top:1px solid var(--line);
-  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
-  display:flex; justify-content:space-around; gap:4px;
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  display:flex; justify-content:space-around; gap:2px;
 }
 nav.tabs button{
-  flex:1; max-width:130px;
+  flex:1; max-width:120px; position:relative;
   display:flex; flex-direction:column; align-items:center; gap:3px;
-  padding:7px 4px; border-radius:12px;
-  color:var(--muted); font-size:12px; font-weight:600;
+  padding:7px 2px; border-radius:12px;
+  color:var(--muted); font-size:11.5px; font-weight:600;
 }
 nav.tabs button svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
 nav.tabs button.active{color:var(--accent); background:var(--accent-soft)}
+.nav-badge{
+  position:absolute; top:2px; inset-inline-end:calc(50% - 22px);
+  min-width:17px; height:17px; padding:0 4px; border-radius:999px;
+  background:var(--danger); color:#fff; font-size:10.5px; font-weight:800;
+  display:grid; place-items:center; font-variant-numeric:tabular-nums;
+}
 @media(min-width:760px){
   nav.tabs{
     position:static; border:1px solid var(--line); border-radius:var(--radius);
     margin-bottom:20px; box-shadow:var(--shadow); padding:6px;
   }
   nav.tabs button{flex-direction:row; gap:8px; font-size:14px; padding:10px}
+  .nav-badge{position:static; margin-inline-start:2px}
 }
 
 main section.view{display:none}
@@ -168,7 +175,7 @@ textarea.input-en::placeholder{color:var(--muted); opacity:.75}
 .notice.err{background:var(--danger-soft); color:var(--danger)}
 .hidden{display:none!important}
 
-/* correction results */
+/* results */
 .result-block{margin-top:16px}
 .result-label{
   display:inline-block; font-size:12px; font-weight:800; letter-spacing:.4px;
@@ -206,6 +213,58 @@ textarea.input-en::placeholder{color:var(--muted); opacity:.75}
 }
 .copy-row{display:flex; justify-content:flex-end; margin-top:8px}
 
+/* today / plan */
+.hero-date{color:var(--muted); font-size:13px; margin-bottom:4px}
+.plan-item{
+  display:flex; align-items:center; gap:12px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:14px 16px; margin-bottom:10px;
+  width:100%; text-align:start;
+}
+.plan-item .p-ic{
+  width:42px; height:42px; border-radius:12px; flex:none;
+  display:grid; place-items:center; font-size:20px;
+  background:var(--accent-soft);
+}
+.plan-item .p-body{flex:1; min-width:0}
+.plan-item .p-title{font-weight:800; font-size:15px}
+.plan-item .p-sub{color:var(--muted); font-size:12.5px}
+.plan-item .p-state{flex:none; font-size:13px; font-weight:800; color:var(--muted)}
+.plan-item.done{opacity:.72}
+.plan-item.done .p-state{color:var(--good)}
+.plan-item.done .p-ic{background:var(--good-soft)}
+.celebrate{
+  background:linear-gradient(135deg, var(--accent), var(--accent) 60%, #2AA184);
+  color:var(--on-accent); border-radius:var(--radius); padding:18px;
+  text-align:center; font-weight:800; font-size:16px; margin-bottom:14px;
+  box-shadow:var(--shadow);
+}
+:root[data-theme="dark"] .celebrate, :root .celebrate{color:#fff}
+.mini-stats{display:flex; gap:10px; margin-bottom:14px}
+.mini-stat{
+  flex:1; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  padding:10px 8px; text-align:center; box-shadow:var(--shadow);
+}
+.mini-stat b{display:block; font-size:20px; color:var(--accent); font-variant-numeric:tabular-nums}
+.mini-stat span{font-size:11.5px; color:var(--muted); font-weight:600}
+
+/* pills (sub-modes) */
+.pills{display:flex; gap:8px; overflow-x:auto; padding:2px; margin-bottom:14px; scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{
+  flex:none; display:flex; align-items:center; gap:6px;
+  border-radius:999px; padding:8px 15px; font-size:13.5px; font-weight:700;
+  background:var(--surface); border:1px solid var(--line); color:var(--muted);
+}
+.pill.active{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.pill .cnt{
+  background:var(--danger); color:#fff; border-radius:999px;
+  min-width:18px; height:18px; padding:0 5px; font-size:11px; font-weight:800;
+  display:grid; place-items:center; font-variant-numeric:tabular-nums;
+}
+.pill.active .cnt{background:rgba(255,255,255,.28)}
+.pill .cnt.calm{background:var(--accent-soft); color:var(--accent)}
+
 /* flashcards */
 .chips{display:flex; gap:8px; overflow-x:auto; padding:2px; margin-bottom:14px; scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
@@ -216,7 +275,7 @@ textarea.input-en::placeholder{color:var(--muted); opacity:.75}
 .chip.active{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 .flash-stage{perspective:1200px; margin-bottom:14px}
 .flash-card{
-  position:relative; width:100%; min-height:280px; cursor:pointer;
+  position:relative; width:100%; min-height:290px; cursor:pointer;
   transform-style:preserve-3d; transition:transform .45s cubic-bezier(.2,.7,.3,1);
 }
 .flash-card.flipped{transform:rotateY(180deg)}
@@ -224,21 +283,47 @@ textarea.input-en::placeholder{color:var(--muted); opacity:.75}
   position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
   box-shadow:var(--shadow); padding:22px;
-  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:14px;
+  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:13px;
 }
 .flash-face.back{transform:rotateY(180deg)}
 .flash-cat{font-size:12px; font-weight:800; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 12px}
-.flash-term{font-family:var(--font-en); direction:ltr; font-size:30px; font-weight:700; letter-spacing:-.3px}
+.flash-term{font-family:var(--font-en); direction:ltr; font-size:29px; font-weight:700; letter-spacing:-.3px}
 .flash-ex{font-family:var(--font-en); direction:ltr; color:var(--muted); font-size:15.5px; font-style:italic; max-width:46ch}
-.flash-ar{font-size:19px; font-weight:700; line-height:1.8; max-width:34ch}
+.flash-ar{font-size:18.5px; font-weight:700; line-height:1.8; max-width:34ch}
 .flash-hint{font-size:12px; color:var(--muted)}
-.flash-known-badge{
+.flash-lvl{
   position:absolute; top:14px; inset-inline-start:14px;
-  font-size:11.5px; font-weight:800; color:var(--good); background:var(--good-soft);
+  font-size:11.5px; font-weight:800; color:var(--muted); background:var(--surface2);
   border-radius:999px; padding:3px 10px;
 }
+.flash-lvl.hot{color:var(--good); background:var(--good-soft)}
 .flash-controls{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
 .flash-progress{text-align:center; color:var(--muted); font-size:13px; margin-top:10px; font-variant-numeric:tabular-nums}
+
+/* grade buttons */
+.grade-row{display:flex; gap:8px}
+.grade-row .btn{flex:1; flex-direction:column; gap:2px; padding:10px 6px}
+.grade-row .g-sub{font-size:11px; font-weight:600; opacity:.8}
+.g-again{background:var(--danger-soft); color:var(--danger)}
+.g-hard{background:var(--amber-soft); color:var(--amber)}
+.g-easy{background:var(--good-soft); color:var(--good)}
+
+.empty-state{
+  text-align:center; padding:38px 18px; color:var(--muted);
+  background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius);
+}
+.empty-state .big{font-size:38px; margin-bottom:8px}
+.empty-state b{color:var(--ink)}
+
+/* word target (sentence practice) */
+.word-target{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:12px;
+  padding:12px 16px; margin-bottom:12px;
+}
+.word-target .wt-en{font-family:var(--font-en); direction:ltr; font-size:20px; font-weight:700}
+.word-target .wt-ar{font-size:12.5px; color:var(--muted)}
+.meaning-toggle{font-size:12.5px; color:var(--accent); font-weight:700; white-space:nowrap}
 
 /* interview */
 .q-box{
@@ -259,6 +344,14 @@ select.q-select{
 .score-num{font-size:30px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; direction:ltr}
 .score-num small{font-size:15px; color:var(--muted); font-weight:600}
 
+/* prompt suggestion */
+.prompt-box{
+  background:var(--surface2); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin-bottom:12px; font-size:14px;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.prompt-box .p-en{font-family:var(--font-en); direction:ltr; text-align:left; flex:1; font-size:14.5px}
+
 /* progress */
 .stats-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px}
 @media(min-width:560px){ .stats-grid{grid-template-columns:repeat(4,1fr)} }
@@ -278,6 +371,11 @@ select.q-select{
 }
 .day-dot.hit{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 .day-name{font-size:10.5px; color:var(--muted); margin-top:4px}
+.lvl-bar{display:flex; height:12px; border-radius:999px; overflow:hidden; background:var(--surface2); border:1px solid var(--line); margin:10px 0 8px}
+.lvl-bar i{display:block; height:100%}
+.lvl-legend{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12px; color:var(--muted)}
+.lvl-legend b{color:var(--ink); font-variant-numeric:tabular-nums}
+.dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-inline-end:4px}
 .settings-row{display:flex; flex-direction:column; gap:10px}
 .settings-row input{
   width:100%; background:var(--surface2); border:1px solid var(--line);
@@ -303,13 +401,17 @@ footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22p
   </header>
 
   <nav class="tabs" aria-label="التنقل الرئيسي">
-    <button data-view="write" class="active">
+    <button data-view="today" class="active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+      <span>اليوم</span>
+    </button>
+    <button data-view="words">
+      <svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/></svg>
+      <span>كلمات</span><span class="nav-badge hidden" id="navWordsBadge"></span>
+    </button>
+    <button data-view="write">
       <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
       <span>كتابة</span>
-    </button>
-    <button data-view="cards">
-      <svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/></svg>
-      <span>بطاقات</span>
     </button>
     <button data-view="interview">
       <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Z"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>
@@ -323,18 +425,51 @@ footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22p
 
   <main>
 
-    <!-- ============ writing ============ -->
-    <section id="view-write" class="view active">
+    <!-- ============ today ============ -->
+    <section id="view-today" class="view active">
       <div class="view-head">
-        <h2>تدريب الكتابة</h2>
-        <p>اكتب أي نص بالإنجليزي — إيميل، منشور LinkedIn، وصف مشروع — وسأصحح لك وأشرح كل خطأ بالعربي.</p>
+        <p class="hero-date" id="heroDate"></p>
+        <h2 id="heroGreeting">يا هلا! 👋</h2>
+        <p>خطة اليوم — أنجزها كلها وحافظ على سلسلتك.</p>
+      </div>
+      <div id="celebrateBox"></div>
+      <div id="planList"></div>
+      <div class="mini-stats">
+        <div class="mini-stat"><b id="msStreak">0</b><span>🔥 السلسلة</span></div>
+        <div class="mini-stat"><b id="msMastered">0</b><span>كلمة متقنة</span></div>
+        <div class="mini-stat"><b id="msToday">0</b><span>نشاط اليوم</span></div>
       </div>
       <div id="aiNotice" class="notice hidden"></div>
+    </section>
+
+    <!-- ============ words ============ -->
+    <section id="view-words" class="view">
+      <div class="view-head">
+        <h2>الكلمات</h2>
+        <p>نظام تكرار متباعد: راجع المستحق، تعلّم الجديد، ثم ثبّت الكلمة بجملة من عندك.</p>
+      </div>
+      <div class="pills" id="wordPills"></div>
+      <div id="wordsArea"></div>
+    </section>
+
+    <!-- ============ writing ============ -->
+    <section id="view-write" class="view">
+      <div class="view-head">
+        <h2>تدريب الكتابة</h2>
+        <p>اكتب أي نص بالإنجليزي وسأصحح وأشرح كل خطأ بالعربي، وأعطيك صياغة أكثر احترافية.</p>
+      </div>
       <div class="card">
+        <div class="prompt-box hidden" id="promptBox">
+          <span>🎯</span>
+          <span class="p-en" id="promptText"></span>
+        </div>
         <textarea id="writeInput" class="input-en" placeholder="Example: I am writing to apply for the data analyst position. I have strong skill in Python and I done many projects..."></textarea>
         <div class="field-foot">
           <span id="writeCount">0 كلمة</span>
-          <button class="btn btn-ghost btn-sm" id="writeSample">جرّب نصاً جاهزاً</button>
+          <span>
+            <button class="btn btn-ghost btn-sm" id="writePrompt">🎯 اقترح موضوعاً</button>
+            <button class="btn btn-ghost btn-sm" id="writeSample">نص تجريبي</button>
+          </span>
         </div>
         <div style="margin-top:12px">
           <button class="btn btn-primary btn-block" id="writeGo">صحّح نصي واشرح لي</button>
@@ -343,44 +478,11 @@ footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22p
       <div id="writeResult"></div>
     </section>
 
-    <!-- ============ flashcards ============ -->
-    <section id="view-cards" class="view">
-      <div class="view-head">
-        <h2>مفردات يومية</h2>
-        <p>بطاقات لمصطلحات علم البيانات والإنجليزية المهنية. اضغط البطاقة لقلبها.</p>
-      </div>
-      <div class="chips" id="catChips"></div>
-      <div class="flash-stage">
-        <div class="flash-card" id="flashCard" role="button" tabindex="0" aria-label="بطاقة تعليمية — اضغط للقلب">
-          <div class="flash-face front">
-            <span class="flash-cat" id="fcCat"></span>
-            <div class="flash-term en" id="fcTerm"></div>
-            <div class="flash-ex" id="fcEx"></div>
-            <span class="flash-hint">اضغط لعرض المعنى</span>
-          </div>
-          <div class="flash-face back">
-            <span class="flash-cat">المعنى</span>
-            <div class="flash-ar" id="fcAr"></div>
-            <div class="flash-ex" id="fcExBack"></div>
-            <span class="flash-hint">اضغط للرجوع</span>
-          </div>
-          <span class="flash-known-badge hidden" id="fcKnown">✓ أعرفها</span>
-        </div>
-      </div>
-      <div class="flash-controls">
-        <button class="btn btn-ghost btn-sm" id="fcPrev">السابقة</button>
-        <button class="btn btn-soft btn-sm" id="fcMark">أعرفها ✓</button>
-        <button class="btn btn-ghost btn-sm" id="fcShuffle">خلط 🔀</button>
-        <button class="btn btn-primary btn-sm" id="fcNext">التالية</button>
-      </div>
-      <p class="flash-progress" id="fcProgress"></p>
-    </section>
-
     <!-- ============ interview ============ -->
     <section id="view-interview" class="view">
       <div class="view-head">
         <h2>تدريب المقابلات</h2>
-        <p>أسئلة مقابلات شائعة لوظائف علم البيانات. اكتب إجابتك بالإنجليزي وسأقيّمها لغوياً وأعطيك نسخة أقوى.</p>
+        <p>أسئلة مقابلات شائعة لوظائف علم البيانات. اكتب إجابتك وسأقيّمها لغوياً وأعطيك نسخة أقوى.</p>
       </div>
       <div class="card">
         <div class="q-meta">
@@ -405,17 +507,18 @@ footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22p
       </div>
       <div class="stats-grid">
         <div class="stat"><b id="stStreak">0</b><span>🔥 أيام متتالية</span></div>
-        <div class="stat"><b id="stTotal">0</b><span>تمارين منجزة</span></div>
-        <div class="stat"><b id="stWrite">0</b><span>تصحيحات كتابة</span></div>
-        <div class="stat"><b id="stIv">0</b><span>إجابات مقابلات</span></div>
+        <div class="stat"><b id="stTotal">0</b><span>تمارين ذكية</span></div>
+        <div class="stat"><b id="stRev">0</b><span>مراجعات كلمات</span></div>
+        <div class="stat"><b id="stMastered">0</b><span>كلمات متقنة</span></div>
       </div>
       <div class="card">
         <h3 style="font-size:15px; margin-bottom:10px">آخر ٧ أيام</h3>
         <div class="days-row" id="daysRow"></div>
       </div>
       <div class="card">
-        <h3 style="font-size:15px; margin-bottom:6px">المفردات</h3>
-        <p class="muted-note">حفظت <b id="stKnown">0</b> من أصل <b id="stCardsTotal">0</b> بطاقة.</p>
+        <h3 style="font-size:15px; margin-bottom:2px">رحلة المفردات</h3>
+        <div class="lvl-bar" id="lvlBar"></div>
+        <div class="lvl-legend" id="lvlLegend"></div>
       </div>
       <div class="card" id="apiKeyCard">
         <h3 style="font-size:15px; margin-bottom:6px">إعداد الذكاء الاصطناعي</h3>
@@ -438,19 +541,13 @@ footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22p
 
 <script>
 'use strict';
-/* ensure RTL even when served inside a wrapper that doesn't set it */
 document.documentElement.setAttribute('dir','rtl');
 document.documentElement.setAttribute('lang','ar');
 
 /* ==================================================================
-   data — flashcards
+   data — flashcards (80)
 ================================================================== */
-const CATS = {
-  ds:   'علم البيانات',
-  iv:   'لغة المقابلات',
-  mail: 'إيميلات وكتابة',
-  work: 'إنجليزية العمل',
-};
+const CATS = { ds:'علم البيانات', iv:'لغة المقابلات', mail:'إيميلات وكتابة', work:'إنجليزية العمل' };
 const CARDS = [
   {c:'ds', en:'overfitting', ex:'The model suffers from overfitting, so it performs poorly on new data.', ar:'فرط التخصيص: النموذج يحفظ بيانات التدريب ويفشل في التعميم على بيانات جديدة'},
   {c:'ds', en:'feature engineering', ex:'Good feature engineering improved our model’s accuracy significantly.', ar:'هندسة الخصائص: إنشاء متغيرات مفيدة من البيانات الخام'},
@@ -468,6 +565,16 @@ const CARDS = [
   {c:'ds', en:'trade-off', ex:'There is a trade-off between model accuracy and interpretability.', ar:'موازنة بين خيارين متعارضين، كسبُ أحدهما على حساب الآخر'},
   {c:'ds', en:'scalable', ex:'We need a scalable solution that handles millions of rows.', ar:'قابل للتوسع مع نمو حجم البيانات أو المستخدمين'},
   {c:'ds', en:'exploratory data analysis', ex:'I always start with exploratory data analysis (EDA).', ar:'التحليل الاستكشافي: فهم البيانات قبل بناء أي نموذج'},
+  {c:'ds', en:'churn', ex:'Our model predicts customer churn with 85% accuracy.', ar:'تسرّب العملاء: توقفهم عن استخدام الخدمة'},
+  {c:'ds', en:'A/B testing', ex:'We ran an A/B test to compare the two designs.', ar:'اختبار مقارنة بين نسختين لمعرفة الأفضل بالبيانات'},
+  {c:'ds', en:'ground truth', ex:'We compared the predictions against the ground truth labels.', ar:'البيانات الحقيقية المرجعية التي تُقاس عليها التنبؤات'},
+  {c:'ds', en:'precision', ex:'High precision means few false alarms.', ar:'الدقة: نسبة صحة ما تنبأ به النموذج إيجابياً'},
+  {c:'ds', en:'recall', ex:'High recall means we catch most of the real cases.', ar:'الاستدعاء: نسبة الحالات الحقيقية التي التقطها النموذج'},
+  {c:'ds', en:'ETL', ex:'The ETL job extracts, transforms, and loads the data nightly.', ar:'استخراج البيانات وتحويلها وتحميلها — أساس هندسة البيانات'},
+  {c:'ds', en:'anomaly detection', ex:'We use anomaly detection to flag unusual transactions.', ar:'كشف الشذوذ: رصد الحالات غير الطبيعية تلقائياً'},
+  {c:'ds', en:'data-driven', ex:'We want every decision here to be data-driven.', ar:'مبني على البيانات لا على الانطباعات'},
+  {c:'ds', en:'model drift', ex:'Model drift degraded our accuracy after six months.', ar:'انحراف النموذج: تدهور أداؤه مع تغيّر البيانات بمرور الوقت'},
+  {c:'ds', en:'interpretability', ex:'Interpretability matters when you present models to executives.', ar:'قابلية التفسير: أن تقدر تشرح لماذا قرر النموذج ما قرره'},
   {c:'iv', en:'I’m a recent graduate in…', ex:'I’m a recent data science graduate with hands-on project experience.', ar:'صيغة احترافية لتقديم نفسك كخريج جديد في بداية المقابلة'},
   {c:'iv', en:'hands-on experience', ex:'I gained hands-on experience through my graduation project.', ar:'خبرة عملية مباشرة (وليست نظرية فقط)'},
   {c:'iv', en:'My strength lies in…', ex:'My strength lies in translating data into clear decisions.', ar:'صيغة قوية للحديث عن نقاط قوتك بدون مبالغة'},
@@ -480,6 +587,12 @@ const CARDS = [
   {c:'iv', en:'walk you through', ex:'Let me walk you through my approach step by step.', ar:'أشرح لك بالتفصيل خطوة بخطوة — مثالية لشرح مشاريعك'},
   {c:'iv', en:'KPI (key performance indicator)', ex:'We chose retention rate as our main KPI.', ar:'مؤشر أداء رئيسي يُقاس به نجاح العمل'},
   {c:'iv', en:'follow up on', ex:'I’d like to follow up on your question about deployment.', ar:'أعقّب على / أرجع لنقطة سابقة'},
+  {c:'iv', en:'In my previous project…', ex:'In my previous project, I analyzed customer behavior data.', ar:'طريقة سلسة لإدخال أمثلة من خبرتك في الإجابة'},
+  {c:'iv', en:'adaptable', ex:'I’m adaptable and comfortable with changing requirements.', ar:'مرن وسريع التأقلم مع المتغيرات'},
+  {c:'iv', en:'attention to detail', ex:'Data cleaning taught me real attention to detail.', ar:'الانتباه للتفاصيل — صفة جوهرية لمحلل البيانات'},
+  {c:'iv', en:'fast learner', ex:'I’m a fast learner — I picked up SQL in two weeks for my project.', ar:'سريع التعلم — واذكر دائماً دليلاً معها'},
+  {c:'iv', en:'end-to-end', ex:'I built the project end-to-end, from data collection to the final dashboard.', ar:'من البداية للنهاية — توحي بالاستقلالية والشمولية'},
+  {c:'iv', en:'Do you have any questions for us?', ex:'Yes — how does the data team measure its success?', ar:'سؤال نهاية المقابلة: حضّر دائماً سؤالاً ذكياً تسأله أنت'},
   {c:'mail', en:'I hope this email finds you well', ex:'Dear Ms. Sarah, I hope this email finds you well.', ar:'تحية افتتاحية رسمية شائعة جداً في الإيميلات'},
   {c:'mail', en:'I am writing to…', ex:'I am writing to apply for the Data Analyst position.', ar:'أكتب إليكم بخصوص… — افتتاحية مباشرة توضح هدف الإيميل'},
   {c:'mail', en:'Please find attached…', ex:'Please find attached my resume and portfolio.', ar:'تجدون مرفقاً… — الصيغة القياسية للمرفقات'},
@@ -492,6 +605,12 @@ const CARDS = [
   {c:'mail', en:'reach out', ex:'Feel free to reach out if you have any questions.', ar:'تواصل مع — بديل عصري واحترافي لكلمة contact'},
   {c:'mail', en:'to summarize', ex:'To summarize, we agreed on three main deliverables.', ar:'للتلخيص — مفيدة في نهاية الإيميلات والاجتماعات'},
   {c:'mail', en:'deliverable', ex:'The final deliverable is a dashboard and a short report.', ar:'مُخرَج نهائي يُسلَّم في نهاية العمل أو المشروع'},
+  {c:'mail', en:'Thank you for your time', ex:'Thank you for your time and consideration.', ar:'شكراً لوقتكم — خاتمة مثالية لإيميلات التقديم'},
+  {c:'mail', en:'as per…', ex:'As per our conversation, I’m sending the updated report.', ar:'بناءً على / حسب ما اتفقنا عليه'},
+  {c:'mail', en:'at your earliest convenience', ex:'Please review the file at your earliest convenience.', ar:'في أقرب وقت يناسبكم — استعجال مهذب'},
+  {c:'mail', en:'keep you posted', ex:'I’ll keep you posted on the progress.', ar:'سأبقيك على اطلاع بالمستجدات'},
+  {c:'mail', en:'on the same page', ex:'I want to make sure we’re on the same page before we start.', ar:'متفقون وفاهمون الشيء نفسه'},
+  {c:'mail', en:'kind reminder', ex:'Just a kind reminder about tomorrow’s deadline.', ar:'تذكير لطيف — لتذكير الآخرين بدون ضغط'},
   {c:'work', en:'deadline', ex:'We’re on track to meet the deadline.', ar:'الموعد النهائي للتسليم'},
   {c:'work', en:'on track', ex:'The project is on track and will finish on time.', ar:'يسير حسب الخطة'},
   {c:'work', en:'bottleneck', ex:'Data collection was the main bottleneck in the project.', ar:'عنق الزجاجة: النقطة التي تبطئ سير العمل كله'},
@@ -502,9 +621,15 @@ const CARDS = [
   {c:'work', en:'key takeaway', ex:'The key takeaway from the analysis is that churn is seasonal.', ar:'الخلاصة أو أهم استنتاج'},
   {c:'work', en:'leverage', ex:'We can leverage existing data instead of collecting new data.', ar:'نستفيد من / نوظّف شيئاً موجوداً لتحقيق نتيجة'},
   {c:'work', en:'streamline', ex:'This script streamlines the reporting process.', ar:'يبسّط ويسرّع عملية كانت معقدة'},
+  {c:'work', en:'brainstorm', ex:'Let’s brainstorm some ideas for the next analysis.', ar:'عصف ذهني: توليد أفكار بشكل جماعي وحر'},
+  {c:'work', en:'feedback', ex:'I’d appreciate your feedback on my analysis.', ar:'ملاحظات وتقييم على عملك'},
+  {c:'work', en:'prioritize', ex:'We need to prioritize the tasks for this sprint.', ar:'نرتب الأولويات ونبدأ بالأهم'},
+  {c:'work', en:'workaround', ex:'We found a workaround until the bug is fixed.', ar:'حل مؤقت بديل يتجاوز المشكلة'},
+  {c:'work', en:'scope', ex:'That request is outside the scope of this project.', ar:'نطاق المشروع: حدود ما يشمله وما لا يشمله'},
+  {c:'work', en:'handover', ex:'I prepared a handover document before my vacation.', ar:'تسليم المهام والمعلومات لشخص آخر'},
 ];
+const CARD_BY_EN = Object.fromEntries(CARDS.map(c=>[c.en,c]));
 
-/* interview questions */
 const QUESTIONS = [
   {t:'عن نفسك', q:'Tell me about yourself.'},
   {t:'الدافع', q:'Why do you want to work as a data scientist?'},
@@ -518,6 +643,19 @@ const QUESTIONS = [
   {t:'تواصل', q:'How do you present a complex analysis to stakeholders?'},
   {t:'نقاط القوة', q:'What are your strengths and weaknesses?'},
   {t:'الطموح', q:'Where do you see yourself in five years?'},
+];
+
+const WRITE_PROMPTS = [
+  'Write a short LinkedIn post announcing that you finished a data-analysis project.',
+  'Email a hiring manager to follow up on your job application.',
+  'Describe your graduation project in 4–5 sentences.',
+  'Politely ask your manager for a deadline extension.',
+  'Write a short professional bio for your GitHub profile.',
+  'Summarize a dashboard’s key findings for a non-technical manager.',
+  'Write a thank-you email to an interviewer after an interview.',
+  'Introduce yourself to a new team in a chat message.',
+  'Explain to a colleague why the data needs cleaning before analysis.',
+  'Write the introduction section of a README for one of your projects.',
 ];
 
 const SAMPLE_TEXT = "Dear hiring manager, I am recently graduate from data science and I am interesting in the data analyst position in your company. I have did several projects in machine learning and I know python very good. I am hard worker and I can learn fastly. Please look to my CV in the attachment. Waiting your reply.";
@@ -548,14 +686,20 @@ const STORE_KEY = 'miran.v1';
 let storageMode = 'memory';
 
 /* ==================================================================
-   state
+   state + spaced repetition
 ================================================================== */
+const NEW_PER_DAY = 5;
+const INTERVALS = [1, 2, 4, 8, 15, 30]; // days per level 0..5
+
 const state = {
+  v: 2,
   streakCount: 0,
-  lastDate: null,          // 'YYYY-MM-DD' of last completed exercise
-  totals: { write:0, iv:0 },
-  history: {},             // {'YYYY-MM-DD': n}
-  known: [],               // english terms marked as known
+  lastDate: null,
+  totals: { write:0, iv:0, sent:0, rev:0 },
+  history: {},               // {'YYYY-MM-DD': n}
+  dayKinds: {},              // {'YYYY-MM-DD': {write:n, iv:n, sent:n, rev:n}}
+  srs: {},                   // {en: {l:0-5, due:'YYYY-MM-DD'}}
+  intro: { date:null, terms:[] },  // today's new-word batch
   apiKey: '',
 };
 
@@ -568,15 +712,21 @@ function effectiveStreak(){
   if (state.lastDate === todayStr() || state.lastDate === todayStr(-1)) return state.streakCount;
   return 0;
 }
-async function saveState(){
-  storageMode = await rawSet(STORE_KEY, JSON.stringify(state));
-}
+async function saveState(){ storageMode = await rawSet(STORE_KEY, JSON.stringify(state)); }
 async function loadState(){
   const raw = await rawGet(STORE_KEY);
-  if (raw){
-    try{ Object.assign(state, JSON.parse(raw)); }catch(e){}
+  if (raw){ try{ Object.assign(state, JSON.parse(raw)); }catch(e){} }
+  // migrate v1 → v2
+  if (!state.v || state.v < 2){
+    state.v = 2;
+    state.srs = state.srs || {};
+    (state.known||[]).forEach(t=>{ if (CARD_BY_EN[t]) state.srs[t] = {l:3, due: todayStr()}; });
+    delete state.known;
   }
-  // detect where a save would land, for the settings note
+  state.totals = Object.assign({write:0, iv:0, sent:0, rev:0}, state.totals);
+  state.dayKinds = state.dayKinds || {};
+  state.srs = state.srs || {};
+  state.intro = state.intro || {date:null, terms:[]};
   storageMode = await rawSet(STORE_KEY+'.probe', '1');
 }
 function recordExercise(kind){
@@ -587,12 +737,61 @@ function recordExercise(kind){
   }
   state.totals[kind] = (state.totals[kind]||0) + 1;
   state.history[t] = (state.history[t]||0) + 1;
+  const dk = state.dayKinds[t] = state.dayKinds[t] || {};
+  dk[kind] = (dk[kind]||0) + 1;
   saveState();
-  renderHeader(); renderProgress();
+  renderHeader(); renderToday(); renderProgress(); renderWordsBadge();
+}
+
+/* SRS helpers */
+function dueTerms(){
+  const t = todayStr();
+  return Object.keys(state.srs).filter(en => CARD_BY_EN[en] && state.srs[en].due <= t);
+}
+function newTermsPool(){ return CARDS.filter(c => !state.srs[c.en]).map(c=>c.en); }
+function todayNewBatch(){
+  const t = todayStr();
+  if (state.intro.date === t && state.intro.terms.length){
+    return state.intro.terms.filter(en => CARD_BY_EN[en]);
+  }
+  // build a fresh batch: round-robin across categories for variety
+  const pool = newTermsPool();
+  const byCat = {}; pool.forEach(en=>{ const c = CARD_BY_EN[en].c; (byCat[c]=byCat[c]||[]).push(en); });
+  const cats = Object.keys(byCat);
+  const batch = [];
+  let i = 0;
+  while (batch.length < NEW_PER_DAY && cats.some(c=>byCat[c].length)){
+    const c = cats[i % cats.length]; i++;
+    if (byCat[c].length) batch.push(byCat[c].shift());
+  }
+  state.intro = { date: t, terms: batch };
+  saveState();
+  return batch;
+}
+function gradeCard(en, g){ // g: 'again' | 'hard' | 'easy'
+  const e = state.srs[en] = state.srs[en] || {l:0, due: todayStr()};
+  if (g === 'again'){ e.l = 0; e.due = todayStr(1); }
+  else if (g === 'hard'){ e.due = todayStr(Math.max(1, Math.ceil(INTERVALS[e.l]/2))); }
+  else { e.l = Math.min(5, e.l + 1); e.due = todayStr(INTERVALS[e.l]); }
+  recordExercise('rev');
+}
+function addToSrs(en){
+  if (!state.srs[en]){ state.srs[en] = {l:0, due: todayStr(1)}; saveState(); }
+}
+function srsBuckets(){
+  const b = {mastered:0, learning:0, started:0, fresh:0};
+  CARDS.forEach(c=>{
+    const e = state.srs[c.en];
+    if (!e) b.fresh++;
+    else if (e.l >= 4) b.mastered++;
+    else if (e.l >= 1) b.learning++;
+    else b.started++;
+  });
+  return b;
 }
 
 /* ==================================================================
-   AI bridge — window.claude.complete → direct API (with key)
+   AI bridge
 ================================================================== */
 const API_MODEL = 'claude-opus-4-8';
 function hasArtifactAI(){ return !!(window.claude && typeof window.claude.complete === 'function'); }
@@ -623,7 +822,6 @@ async function askClaude(prompt){
   }
   throw new Error('no-ai');
 }
-
 function extractJSON(text){
   let t = String(text).trim();
   t = t.replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'');
@@ -631,9 +829,7 @@ function extractJSON(text){
   if (a === -1 || b === -1) throw new Error('bad-json');
   return JSON.parse(t.slice(a, b+1));
 }
-
 const LEARNER_CONTEXT = `You are an expert English coach for Arabic speakers. The learner is Mohammed, a Saudi data-science graduate with intermediate English. His goal is practical professional English: job interviews, work emails, LinkedIn, and data-science vocabulary. All explanations MUST be in clear, simple Arabic (Saudi-friendly Modern Standard Arabic). Be encouraging but direct — point out real mistakes honestly.`;
-
 const JSON_RULES = `Respond with ONLY a valid JSON object. No markdown, no code fences, no text before or after the JSON. Escape newlines inside strings as \\n.`;
 
 /* ==================================================================
@@ -650,7 +846,7 @@ function setLoading(btn, on, label){
 }
 function errorsHTML(errors){
   if (!errors || !errors.length){
-    return '<div class="praise">👏 ما لقيت أخطاء واضحة تستحق التصحيح — نصك سليم!</div>';
+    return '<div class="praise">👏 ما لقيت أخطاء واضحة تستحق التصحيح — لغتك سليمة!</div>';
   }
   const typeAr = {grammar:'قواعد', vocabulary:'اختيار كلمات', style:'أسلوب', spelling:'إملاء', punctuation:'ترقيم'};
   return errors.map(e=>`
@@ -681,18 +877,367 @@ function aiErrorHTML(err){
   if (err && err.message === 'refused') msg = 'النموذج اعتذر عن هذا الطلب. جرّب صياغة النص بشكل مختلف.';
   return `<div class="notice err">${esc(msg)}</div>`;
 }
+function flashHTML(card, opts={}){
+  const e = state.srs[card.en];
+  const lvlTxt = !e ? 'جديدة ✨' : (e.l>=4 ? 'متقنة ★' : 'مستوى '+(e.l+1)+'/6');
+  return `
+  <div class="flash-stage">
+    <div class="flash-card" id="flashCard" role="button" tabindex="0" aria-label="بطاقة تعليمية — اضغط للقلب">
+      <div class="flash-face front">
+        <span class="flash-cat">${esc(CATS[card.c])}</span>
+        <div class="flash-term en">${esc(card.en)}</div>
+        ${opts.hideExample ? '' : `<div class="flash-ex">“${esc(card.ex)}”</div>`}
+        <span class="flash-hint">اضغط لعرض المعنى</span>
+      </div>
+      <div class="flash-face back">
+        <span class="flash-cat">المعنى</span>
+        <div class="flash-ar">${esc(card.ar)}</div>
+        <div class="flash-ex">“${esc(card.ex)}”</div>
+        <span class="flash-hint">اضغط للرجوع</span>
+      </div>
+      <span class="flash-lvl ${e && e.l>=4 ? 'hot':''}">${lvlTxt}</span>
+    </div>
+  </div>`;
+}
+function bindFlip(){
+  const el = $('flashCard'); if(!el) return;
+  el.addEventListener('click', ()=> el.classList.toggle('flipped'));
+  el.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); el.classList.toggle('flipped'); } });
+}
 
 /* ==================================================================
    navigation
 ================================================================== */
+function switchView(name){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  document.querySelectorAll('main .view').forEach(v=>v.classList.remove('active'));
+  $('view-'+name).classList.add('active');
+  if (name==='today') renderToday();
+  if (name==='words') renderWords();
+  if (name==='progress') renderProgress();
+  window.scrollTo({top:0});
+}
 document.querySelectorAll('nav.tabs button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b===btn));
-    document.querySelectorAll('main .view').forEach(v=>v.classList.remove('active'));
-    $('view-'+btn.dataset.view).classList.add('active');
-    window.scrollTo({top:0});
-  });
+  btn.addEventListener('click', ()=> switchView(btn.dataset.view));
 });
+
+/* ==================================================================
+   today view
+================================================================== */
+function planStatus(){
+  const t = todayStr();
+  const dk = state.dayKinds[t] || {};
+  const due = dueTerms().length;
+  const batch = todayNewBatch();
+  const newLeft = batch.filter(en=>!state.srs[en]).length;
+  const noNewLeft = newTermsPool().length === 0 && newLeft === 0;
+  return {
+    review: { count: due, done: due === 0 },
+    fresh:  { count: newLeft, done: newLeft === 0, exhausted: noNewLeft },
+    write:  { done: (dk.write||0) >= 1 },
+    iv:     { done: (dk.iv||0) >= 1 },
+    sent:   { done: (dk.sent||0) >= 1 },
+  };
+}
+function renderToday(){
+  const d = new Date();
+  $('heroDate').textContent = d.toLocaleDateString('ar-EG-u-ca-gregory', {weekday:'long', day:'numeric', month:'long'});
+  const h = d.getHours();
+  $('heroGreeting').textContent = h < 12 ? 'صباح الإنجاز يا محمد ☀️' : (h < 18 ? 'يا هلا محمد 👋' : 'مساء الخير يا محمد 🌙');
+
+  const p = planStatus();
+  const items = [
+    {k:'review', ic:'📚', title:'راجع كلماتك', sub: p.review.count ? p.review.count+' كلمة مستحقة للمراجعة' : 'لا توجد مراجعات مستحقة اليوم', done: p.review.done, go: ()=>{ switchView('words'); setWordMode('review'); }},
+    {k:'fresh', ic:'✨', title:'كلمات جديدة', sub: p.fresh.exhausted ? 'أنهيت كل كلمات البنك — ما شاء الله!' : (p.fresh.count ? p.fresh.count+' كلمات بانتظارك' : 'أخذت كلمات اليوم'), done: p.fresh.done, go: ()=>{ switchView('words'); setWordMode('new'); }},
+    {k:'sent', ic:'🧩', title:'ثبّت كلمة بجملة', sub:'اكتب جملة بكلمة تتعلمها والـ AI يقيّمها', done: p.sent.done, go: ()=>{ switchView('words'); setWordMode('sent'); }},
+    {k:'write', ic:'✍️', title:'تمرين كتابة', sub:'نص واحد يومياً يصنع فرقاً كبيراً', done: p.write.done, go: ()=> switchView('write')},
+    {k:'iv', ic:'🎤', title:'سؤال مقابلة', sub:'جاوب سؤالاً واحداً وتعلم من النسخة المحسّنة', done: p.iv.done, go: ()=> switchView('interview')},
+  ];
+  $('planList').innerHTML = items.map((it,i)=>`
+    <button class="plan-item ${it.done?'done':''}" data-plan="${i}">
+      <span class="p-ic">${it.ic}</span>
+      <span class="p-body">
+        <span class="p-title">${it.title}</span><br>
+        <span class="p-sub">${esc(it.sub)}</span>
+      </span>
+      <span class="p-state">${it.done ? '✓ تم' : 'ابدأ ←'}</span>
+    </button>`).join('');
+  $('planList').querySelectorAll('[data-plan]').forEach(b=>{
+    b.addEventListener('click', ()=> items[+b.dataset.plan].go());
+  });
+
+  const allDone = items.every(it=>it.done);
+  $('celebrateBox').innerHTML = allDone
+    ? '<div class="celebrate">🎉 أنجزت خطة اليوم كاملة! سلسلتك بأمان — نشوفك بكرة</div>' : '';
+
+  const t = todayStr();
+  $('msStreak').textContent = effectiveStreak();
+  $('msMastered').textContent = srsBuckets().mastered;
+  $('msToday').textContent = state.history[t]||0;
+}
+function renderWordsBadge(){
+  const n = dueTerms().length + todayNewBatch().filter(en=>!state.srs[en]).length;
+  const b = $('navWordsBadge');
+  if (n > 0){ b.textContent = n; b.classList.remove('hidden'); }
+  else b.classList.add('hidden');
+}
+
+/* ==================================================================
+   words view — modes: review | new | sent | browse
+================================================================== */
+let wordMode = 'review';
+let reviewQueue = [], reviewDone = 0;
+let newQueue = [], newPos = 0;
+let browseDeck = [...CARDS], browsePos = 0, browseCat = 'all';
+let sentWord = null;
+
+function setWordMode(m){
+  wordMode = m;
+  if (m === 'review'){
+    reviewQueue = dueTerms();
+    for (let i=reviewQueue.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [reviewQueue[i],reviewQueue[j]]=[reviewQueue[j],reviewQueue[i]]; }
+    reviewDone = 0;
+  }
+  if (m === 'new'){
+    newQueue = todayNewBatch().filter(en=>!state.srs[en]);
+    newPos = 0;
+  }
+  if (m === 'sent' && !sentWord){
+    const pool = Object.keys(state.srs).filter(en=>CARD_BY_EN[en]);
+    sentWord = pool.length ? pool[Math.floor(Math.random()*pool.length)] : CARDS[0].en;
+  }
+  renderWords();
+}
+function renderWordPills(){
+  const due = dueTerms().length;
+  const fresh = todayNewBatch().filter(en=>!state.srs[en]).length;
+  const pills = [
+    {k:'review', label:'مراجعة', cnt: due, hot:true},
+    {k:'new', label:'جديدة', cnt: fresh, hot:false},
+    {k:'sent', label:'جملتي 🧩'},
+    {k:'browse', label:'تصفح'},
+  ];
+  $('wordPills').innerHTML = pills.map(p=>`
+    <button class="pill ${wordMode===p.k?'active':''}" data-mode="${p.k}">
+      ${p.label}${p.cnt ? ` <span class="cnt ${p.hot?'':'calm'}">${p.cnt}</span>`:''}
+    </button>`).join('');
+  $('wordPills').querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click', ()=> setWordMode(p.dataset.mode));
+  });
+}
+function renderWords(){
+  renderWordPills();
+  const area = $('wordsArea');
+  if (wordMode === 'review') return renderReview(area);
+  if (wordMode === 'new') return renderNew(area);
+  if (wordMode === 'sent') return renderSent(area);
+  return renderBrowse(area);
+}
+
+/* --- review mode --- */
+function renderReview(area){
+  if (!reviewQueue.length){
+    const anyLearned = Object.keys(state.srs).length > 0;
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="big">${reviewDone ? '🎉' : '🌿'}</div>
+        ${reviewDone
+          ? `<p><b>أنهيت مراجعة اليوم!</b> راجعت ${reviewDone} ${reviewDone===1?'كلمة':'كلمات'}.</p><p style="margin-top:6px">ثبّتها أكثر: اكتب جملة بوحدة منها في «جملتي 🧩»</p>`
+          : anyLearned
+            ? '<p><b>لا توجد مراجعات مستحقة اليوم.</b></p><p style="margin-top:6px">خذ كلمات جديدة أو تصفح البنك.</p>'
+            : '<p><b>ما بدأت بعد!</b></p><p style="margin-top:6px">ابدأ من «جديدة» — خذ أول ٥ كلمات لك اليوم.</p>'}
+      </div>`;
+    return;
+  }
+  const en = reviewQueue[0];
+  const card = CARD_BY_EN[en];
+  area.innerHTML = `
+    ${flashHTML(card, {hideExample:true})}
+    <div class="grade-row" id="gradeRow">
+      <button class="btn g-again" data-g="again">نسيتها<span class="g-sub">تعود غداً</span></button>
+      <button class="btn g-hard" data-g="hard">بصعوبة<span class="g-sub">فترة أقصر</span></button>
+      <button class="btn g-easy" data-g="easy">عرفتها<span class="g-sub">فترة أطول</span></button>
+    </div>
+    <p class="flash-progress">متبقي ${reviewQueue.length} · راجعت ${reviewDone}</p>
+    <p class="muted-note" style="text-align:center; margin-top:6px">اقلب البطاقة أولاً وتذكر المعنى، ثم قيّم نفسك بصدق — الصدق هو اللي يخلي الجدولة تشتغل لصالحك.</p>`;
+  bindFlip();
+  $('gradeRow').querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      gradeCard(en, b.dataset.g);
+      reviewQueue.shift();
+      reviewDone++;
+      renderWords();
+    });
+  });
+}
+
+/* --- new words mode --- */
+function renderNew(area){
+  if (!newQueue.length || newPos >= newQueue.length){
+    const exhausted = newTermsPool().length === 0;
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="big">${exhausted ? '🏆' : '✅'}</div>
+        ${exhausted
+          ? '<p><b>أنهيت كل كلمات البنك!</b> ركز الآن على المراجعة وكتابة الجمل.</p>'
+          : '<p><b>أخذت كلمات اليوم الجديدة.</b></p><p style="margin-top:6px">تعود بكرة دفعة جديدة — كثرة الكلمات دفعة وحدة تضر أكثر ما تنفع. راجع أو اكتب جملة الآن.</p>'}
+      </div>`;
+    return;
+  }
+  const en = newQueue[newPos];
+  const card = CARD_BY_EN[en];
+  area.innerHTML = `
+    ${flashHTML(card)}
+    <div class="flash-controls">
+      <button class="btn btn-primary" id="newGot">فهمتها — أضفها لمراجعاتي ✓</button>
+    </div>
+    <p class="flash-progress">كلمة ${newPos+1} من ${newQueue.length} لليوم</p>
+    <p class="muted-note" style="text-align:center; margin-top:6px">اقرأ المثال بصوت مسموع مرة — يساعد الدماغ يربط الكلمة بسياقها.</p>`;
+  bindFlip();
+  $('newGot').addEventListener('click', ()=>{
+    addToSrs(en);
+    newPos++;
+    renderWordsBadge();
+    renderWords();
+  });
+}
+
+/* --- sentence practice mode --- */
+function renderSent(area){
+  const learned = Object.keys(state.srs).filter(en=>CARD_BY_EN[en]);
+  const pool = learned.length ? learned : CARDS.map(c=>c.en);
+  if (!sentWord || !pool.includes(sentWord)) sentWord = pool[0];
+  const card = CARD_BY_EN[sentWord];
+  area.innerHTML = `
+    <div class="card">
+      <div class="word-target">
+        <div>
+          <div class="wt-en">${esc(card.en)}</div>
+          <div class="wt-ar hidden" id="wtMeaning">${esc(card.ar)}</div>
+        </div>
+        <span>
+          <button class="meaning-toggle" id="wtToggle">أظهر المعنى</button>
+          <button class="meaning-toggle" id="wtShuffle">🔀 كلمة أخرى</button>
+        </span>
+      </div>
+      <p class="muted-note" style="margin-bottom:10px">اكتب جملة من عندك (عن شغلك، مشروعك، حياتك…) تستخدم فيها هذه الكلمة استخداماً صحيحاً. هذا أقوى تمرين لتثبيت الكلمة في ذاكرتك.</p>
+      <textarea id="sentInput" class="input-en" style="min-height:100px" placeholder="Write one sentence using “${esc(card.en)}”..."></textarea>
+      <div style="margin-top:12px">
+        <button class="btn btn-primary btn-block" id="sentGo">قيّم جملتي</button>
+      </div>
+    </div>
+    <div id="sentResult"></div>`;
+  $('wtToggle').addEventListener('click', ()=>{
+    const m = $('wtMeaning');
+    m.classList.toggle('hidden');
+    $('wtToggle').textContent = m.classList.contains('hidden') ? 'أظهر المعنى' : 'أخف المعنى';
+  });
+  $('wtShuffle').addEventListener('click', ()=>{
+    const others = pool.filter(en=>en!==sentWord);
+    sentWord = others.length ? others[Math.floor(Math.random()*others.length)] : sentWord;
+    renderWords();
+  });
+  $('sentGo').addEventListener('click', async ()=>{
+    const s = $('sentInput').value.trim();
+    const out = $('sentResult');
+    if (wordCount(s) < 4){ out.innerHTML = '<div class="notice">اكتب جملة كاملة من ٤ كلمات على الأقل 🙂</div>'; return; }
+    setLoading($('sentGo'), true, 'جاري التقييم…');
+    out.innerHTML = '';
+    const prompt = `${LEARNER_CONTEXT}
+
+The learner is practicing the word/phrase "${card.en}" (meaning in Arabic: ${card.ar}). He wrote this sentence to practice using it:
+
+SENTENCE:
+<<<${s}>>>
+
+Evaluate: did he use "${card.en}" correctly and naturally? Also check the sentence's overall English.
+
+${JSON_RULES}
+Schema:
+{
+ "used_correctly": true,
+ "score": 8,
+ "praise_ar": "جملة تشجيع قصيرة بالعربي",
+ "verdict_ar": "حكم مختصر بالعربي: هل استخدم الكلمة صح؟ ولماذا؟",
+ "errors": [
+   {"original": "wrong phrase", "correction": "fixed phrase", "type": "grammar|vocabulary|style|spelling", "explanation_ar": "شرح عربي مختصر"}
+ ],
+ "better": "a natural, professional version of his sentence using the word",
+ "bonus_ar": "جملة إنجليزية إضافية قصيرة كمثال آخر على استخدام الكلمة، ثم شرحها بالعربي بين قوسين"
+}
+score is 1-10 for the sentence quality.`;
+    try{
+      const raw = await askClaude(prompt);
+      const r = extractJSON(raw);
+      const ok = !!r.used_correctly;
+      out.innerHTML = `
+        <div class="card">
+          <div class="praise" style="${ok?'':'background:var(--amber-soft); color:var(--amber)'}">
+            ${ok?'🎯':'🤏'} ${esc(r.verdict_ar||'')}
+          </div>
+          <div class="result-block">
+            <span class="result-label">ملاحظات (${(r.errors||[]).length})</span>
+            ${errorsHTML(r.errors)}
+          </div>
+          <div class="result-block">
+            <span class="result-label">صياغة أجمل ✨</span>
+            <div class="en-panel">${esc(r.better||'')}</div>
+          </div>
+          <div class="result-block">
+            <span class="result-label">مثال إضافي</span>
+            <p style="font-size:14.5px">${esc(r.bonus_ar||'')}</p>
+          </div>
+          <div class="result-block praise">🌟 ${esc(r.praise_ar||'')}</div>
+        </div>`;
+      if (ok){
+        const e = state.srs[card.en];
+        if (e){ e.l = Math.min(5, e.l+1); e.due = todayStr(INTERVALS[e.l]); }
+        else addToSrs(card.en);
+      }
+      recordExercise('sent');
+    }catch(err){
+      out.innerHTML = aiErrorHTML(err);
+    }finally{
+      setLoading($('sentGo'), false);
+      out.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+  });
+}
+
+/* --- browse mode --- */
+function renderBrowse(area){
+  if (browseCat !== 'all') browseDeck = CARDS.filter(c=>c.c===browseCat);
+  else if (browseDeck.length !== CARDS.length) browseDeck = [...CARDS];
+  if (browsePos >= browseDeck.length) browsePos = 0;
+  const card = browseDeck[browsePos];
+  const chips = [['all','الكل ('+CARDS.length+')'], ...Object.entries(CATS).map(([k,v])=>[k, v+' ('+CARDS.filter(c=>c.c===k).length+')'])];
+  area.innerHTML = `
+    <div class="chips" id="catChips">
+      ${chips.map(([k,label])=>`<button class="chip ${k===browseCat?'active':''}" data-cat="${k}">${label}</button>`).join('')}
+    </div>
+    ${flashHTML(card)}
+    <div class="flash-controls">
+      <button class="btn btn-ghost btn-sm" id="brPrev">السابقة</button>
+      ${state.srs[card.en] ? '' : '<button class="btn btn-soft btn-sm" id="brAdd">أضفها لمراجعاتي +</button>'}
+      <button class="btn btn-ghost btn-sm" id="brShuffle">خلط 🔀</button>
+      <button class="btn btn-primary btn-sm" id="brNext">التالية</button>
+    </div>
+    <p class="flash-progress">البطاقة ${browsePos+1} من ${browseDeck.length}</p>`;
+  bindFlip();
+  area.querySelectorAll('#catChips .chip').forEach(ch=>ch.addEventListener('click', ()=>{
+    browseCat = ch.dataset.cat; browsePos = 0;
+    browseDeck = browseCat==='all' ? [...CARDS] : CARDS.filter(c=>c.c===browseCat);
+    renderWords();
+  }));
+  $('brNext').addEventListener('click', ()=>{ browsePos=(browsePos+1)%browseDeck.length; renderWords(); });
+  $('brPrev').addEventListener('click', ()=>{ browsePos=(browsePos-1+browseDeck.length)%browseDeck.length; renderWords(); });
+  $('brShuffle').addEventListener('click', ()=>{
+    for (let i=browseDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [browseDeck[i],browseDeck[j]]=[browseDeck[j],browseDeck[i]]; }
+    browsePos=0; renderWords();
+  });
+  const addBtn = $('brAdd');
+  if (addBtn) addBtn.addEventListener('click', ()=>{ addToSrs(card.en); renderWordsBadge(); renderWords(); });
+}
 
 /* ==================================================================
    writing view
@@ -702,6 +1247,13 @@ $('writeSample').addEventListener('click', ()=>{
   $('writeInput').value = SAMPLE_TEXT;
   $('writeInput').dispatchEvent(new Event('input'));
 });
+let lastPrompt = -1;
+$('writePrompt').addEventListener('click', ()=>{
+  let n; do{ n = Math.floor(Math.random()*WRITE_PROMPTS.length); }while(n===lastPrompt && WRITE_PROMPTS.length>1);
+  lastPrompt = n;
+  $('promptText').textContent = WRITE_PROMPTS[n];
+  $('promptBox').classList.remove('hidden');
+});
 
 $('writeGo').addEventListener('click', async ()=>{
   const text = $('writeInput').value.trim();
@@ -709,8 +1261,9 @@ $('writeGo').addEventListener('click', async ()=>{
   if (wordCount(text) < 5){ out.innerHTML = '<div class="notice">اكتب ٥ كلمات على الأقل عشان أقدر أساعدك 🙂</div>'; return; }
   setLoading($('writeGo'), true, 'جاري التصحيح…');
   out.innerHTML = '';
+  const promptCtx = $('promptBox').classList.contains('hidden') ? '' : `\nThe learner was writing on this suggested topic: "${$('promptText').textContent}"\n`;
   const prompt = `${LEARNER_CONTEXT}
-
+${promptCtx}
 Analyze this English text written by the learner and correct it.
 
 TEXT:
@@ -758,53 +1311,6 @@ Schema:
     setLoading($('writeGo'), false);
     out.scrollIntoView({behavior:'smooth', block:'nearest'});
   }
-});
-
-/* ==================================================================
-   flashcards view
-================================================================== */
-let deck = [...CARDS];
-let deckPos = 0;
-let activeCat = 'all';
-
-function buildChips(){
-  const chips = [['all','الكل ('+CARDS.length+')'], ...Object.entries(CATS).map(([k,v])=>[k, v+' ('+CARDS.filter(c=>c.c===k).length+')'])];
-  $('catChips').innerHTML = chips.map(([k,label])=>`<button class="chip ${k===activeCat?'active':''}" data-cat="${k}">${label}</button>`).join('');
-  $('catChips').querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click', ()=>{
-    activeCat = ch.dataset.cat;
-    deck = activeCat==='all' ? [...CARDS] : CARDS.filter(c=>c.c===activeCat);
-    deckPos = 0; buildChips(); renderCard();
-  }));
-}
-function renderCard(){
-  const card = deck[deckPos];
-  const el = $('flashCard');
-  el.classList.remove('flipped');
-  if (!card) return;
-  $('fcCat').textContent = CATS[card.c];
-  $('fcTerm').textContent = card.en;
-  $('fcEx').textContent = '“'+card.ex+'”';
-  $('fcAr').textContent = card.ar;
-  $('fcExBack').textContent = '“'+card.ex+'”';
-  const known = state.known.includes(card.en);
-  $('fcKnown').classList.toggle('hidden', !known);
-  $('fcMark').textContent = known ? 'إلغاء ✓' : 'أعرفها ✓';
-  const knownInDeck = deck.filter(c=>state.known.includes(c.en)).length;
-  $('fcProgress').textContent = `البطاقة ${deckPos+1} من ${deck.length} · تعرف ${knownInDeck} منها`;
-}
-$('flashCard').addEventListener('click', ()=> $('flashCard').classList.toggle('flipped'));
-$('flashCard').addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); $('flashCard').classList.toggle('flipped'); } });
-$('fcNext').addEventListener('click', ()=>{ deckPos = (deckPos+1)%deck.length; renderCard(); });
-$('fcPrev').addEventListener('click', ()=>{ deckPos = (deckPos-1+deck.length)%deck.length; renderCard(); });
-$('fcShuffle').addEventListener('click', ()=>{
-  for (let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
-  deckPos=0; renderCard();
-});
-$('fcMark').addEventListener('click', ()=>{
-  const card = deck[deckPos]; if(!card) return;
-  const i = state.known.indexOf(card.en);
-  if (i>=0) state.known.splice(i,1); else state.known.push(card.en);
-  saveState(); renderCard(); renderProgress();
 });
 
 /* ==================================================================
@@ -892,11 +1398,10 @@ const DAY_NAMES = ['الأحد','الإثنين','الثلاثاء','الأرب�
 function renderHeader(){ $('streakNum').textContent = effectiveStreak(); }
 function renderProgress(){
   $('stStreak').textContent = effectiveStreak();
-  $('stWrite').textContent = state.totals.write||0;
-  $('stIv').textContent = state.totals.iv||0;
-  $('stTotal').textContent = (state.totals.write||0)+(state.totals.iv||0);
-  $('stKnown').textContent = state.known.length;
-  $('stCardsTotal').textContent = CARDS.length;
+  $('stTotal').textContent = (state.totals.write||0)+(state.totals.iv||0)+(state.totals.sent||0);
+  $('stRev').textContent = state.totals.rev||0;
+  const b = srsBuckets();
+  $('stMastered').textContent = b.mastered;
   let html = '';
   for (let i=6;i>=0;i--){
     const d = new Date(); d.setDate(d.getDate()-i);
@@ -905,6 +1410,16 @@ function renderProgress(){
     html += `<div class="day-cell"><div class="day-dot ${n?'hit':''}">${n||''}</div><div class="day-name">${DAY_NAMES[d.getDay()]}</div></div>`;
   }
   $('daysRow').innerHTML = html;
+  // vocab journey bar
+  const total = CARDS.length;
+  const segs = [
+    ['متقنة', b.mastered, 'var(--accent)'],
+    ['قيد التعلم', b.learning, 'var(--amber)'],
+    ['بدأتها', b.started, 'var(--accent-line)'],
+    ['لم تبدأ', b.fresh, 'var(--surface2)'],
+  ];
+  $('lvlBar').innerHTML = segs.map(([_,n,c])=>`<i style="width:${(n/total*100).toFixed(1)}%; background:${c}"></i>`).join('');
+  $('lvlLegend').innerHTML = segs.map(([label,n,c])=>`<span><span class="dot" style="background:${c}"></span>${label} <b>${n}</b></span>`).join('');
   const modeAr = {storage:'التخزين الدائم متاح ✓ — تقدمك محفوظ بين الجلسات.', local:'تقدمك محفوظ في متصفحك على هذا الجهاز.', memory:'⚠️ التخزين الدائم غير متاح — بياناتك ستُفقد عند إغلاق الصفحة.'};
   $('storageNote').textContent = modeAr[storageMode];
 }
@@ -913,9 +1428,8 @@ function renderAINotice(){
   if (hasAI()){ notice.classList.add('hidden'); }
   else {
     notice.classList.remove('hidden');
-    notice.textContent = 'ميزات التصحيح والتقييم تحتاج اتصالاً بالذكاء الاصطناعي: افتح التطبيق داخل Claude، أو أضف مفتاح Anthropic API من تبويب «تقدمي». البطاقات التعليمية تعمل بدون اتصال.';
+    notice.textContent = 'ميزات التصحيح والتقييم تحتاج اتصالاً بالذكاء الاصطناعي: افتح التطبيق داخل Claude، أو أضف مفتاح Anthropic API من تبويب «تقدمي». البطاقات والمراجعة تعمل بدون اتصال.';
   }
-  // api key card
   if (hasArtifactAI()){
     $('apiKeyNote').textContent = 'أنت داخل Claude — الذكاء الاصطناعي يعمل تلقائياً بدون أي إعداد ✓';
     $('apiKeyInput').parentElement.classList.add('hidden');
@@ -932,10 +1446,12 @@ $('apiKeySave').addEventListener('click', async ()=>{
   setTimeout(()=> $('apiKeySave').textContent = 'حفظ المفتاح', 1500);
 });
 $('resetAll').addEventListener('click', async ()=>{
-  if (!confirm('متأكد؟ بيتم حذف السلسلة والتمارين والبطاقات المحفوظة.')) return;
-  state.streakCount=0; state.lastDate=null; state.totals={write:0,iv:0}; state.history={}; state.known=[];
+  if (!confirm('متأكد؟ بيتم حذف السلسلة والتمارين وكل تقدم الكلمات.')) return;
+  state.streakCount=0; state.lastDate=null;
+  state.totals={write:0,iv:0,sent:0,rev:0}; state.history={}; state.dayKinds={};
+  state.srs={}; state.intro={date:null,terms:[]};
   await saveState();
-  renderHeader(); renderProgress(); renderCard();
+  renderHeader(); renderProgress(); renderToday(); renderWordsBadge();
 });
 
 /* ==================================================================
@@ -943,12 +1459,14 @@ $('resetAll').addEventListener('click', async ()=>{
 ================================================================== */
 (async function init(){
   await loadState();
-  buildChips();
-  renderCard();
   buildQuestions();
   renderHeader();
+  renderToday();
+  renderWordsBadge();
   renderProgress();
   renderAINotice();
+  setWordMode(dueTerms().length ? 'review' : 'new');
+  switchView('today');
 })();
 </script>
 </body>
