@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["claude/intelligent-fermi-r3jii4"]
+    branches: ["claude/english-learning-app-635wz4"]
   workflow_dispatch:
 
 permissions:
@@ -34,7 +34,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # The whole repo root is the static site (index.html, css/, js/)
+          # The whole repo root is the static site (index.html)
           path: "."
 
       - name: Deploy to GitHub Pages
