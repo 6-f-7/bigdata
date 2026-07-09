@@ -527,6 +527,7 @@ footer.credit{text-align:center; color:var(--muted); font-size:12px; padding:22p
           <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
           <button class="btn btn-soft btn-sm" id="apiKeySave">حفظ المفتاح</button>
         </div>
+        <p class="muted-note en" id="aiDiag" style="direction:ltr; margin-top:10px; word-break:break-all"></p>
       </div>
       <div class="card">
         <h3 style="font-size:15px; margin-bottom:6px">البيانات</h3>
@@ -806,12 +807,31 @@ function srsBuckets(){
    AI bridge
 ================================================================== */
 const API_MODEL = 'claude-opus-4-8';
-function hasArtifactAI(){ return !!(window.claude && typeof window.claude.complete === 'function'); }
+function artifactAIFn(){
+  const c = window.claude;
+  if (!c) return null;
+  if (typeof c.complete === 'function') return p=>c.complete(p);
+  if (typeof c.chat === 'function') return p=>c.chat(p);
+  if (typeof c.sendMessage === 'function') return p=>c.sendMessage(p);
+  return null;
+}
+function normalizeAIResult(res){
+  if (typeof res === 'string') return res;
+  if (res && typeof res === 'object'){
+    if (typeof res.completion === 'string') return res.completion;
+    if (typeof res.text === 'string') return res.text;
+    if (typeof res.message === 'string') return res.message;
+    if (Array.isArray(res.content)) return res.content.map(b=>(b && (b.text||'')) ).join('');
+  }
+  return String(res ?? '');
+}
+function hasArtifactAI(){ return !!artifactAIFn(); }
 function hasAI(){ return hasArtifactAI() || !!state.apiKey; }
 
 async function askClaude(prompt){
-  if (hasArtifactAI()){
-    return await window.claude.complete(prompt);
+  const bridge = artifactAIFn();
+  if (bridge){
+    return normalizeAIResult(await bridge(prompt));
   }
   if (state.apiKey){
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1627,6 +1647,18 @@ function renderAINotice(){
     $('apiKeyNote').textContent = 'أنت خارج Claude، لذلك تحتاج مفتاح Anthropic API لتفعيل التصحيح والتقييم. المفتاح يُحفظ على جهازك فقط.';
     if (state.apiKey) $('apiKeyInput').value = state.apiKey;
   }
+  const c = window.claude;
+  const cInfo = c
+    ? 'window.claude: {' + Object.getOwnPropertyNames(c).map(k=>{ try{ return k + (typeof c[k]==='function'?'()':''); }catch(e){ return k; } }).join(', ') + '}'
+    : 'window.claude: ✗ غير موجود';
+  const sInfo = 'window.storage: ' + (window.storage ? '✓' : '✗');
+  $('aiDiag').textContent = '🔍 ' + cInfo + ' · ' + sInfo;
+}
+/* the AI bridge may be injected after page load — re-check for a few seconds */
+let aiPolls = 0;
+function pollAIBridge(){
+  if (hasArtifactAI()){ renderAINotice(); return; }
+  if (++aiPolls < 30) setTimeout(pollAIBridge, 300);
 }
 $('apiKeySave').addEventListener('click', async ()=>{
   state.apiKey = $('apiKeyInput').value.trim();
@@ -1657,6 +1689,7 @@ $('resetAll').addEventListener('click', async ()=>{
   renderWordsBadge();
   renderProgress();
   renderAINotice();
+  pollAIBridge();
   setWordMode(dueTerms().length ? 'review' : 'new');
   switchView('today');
 })();
