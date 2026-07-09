@@ -547,7 +547,7 @@ document.documentElement.setAttribute('lang','ar');
 /* ==================================================================
    data — flashcards (80)
 ================================================================== */
-const CATS = { ds:'علم البيانات', iv:'لغة المقابلات', mail:'إيميلات وكتابة', work:'إنجليزية العمل' };
+const CATS = { ds:'علم البيانات', iv:'لغة المقابلات', mail:'إيميلات وكتابة', work:'إنجليزية العمل', my:'كلماتي ⭐' };
 const CARDS = [
   {c:'ds', en:'overfitting', ex:'The model suffers from overfitting, so it performs poorly on new data.', ar:'فرط التخصيص: النموذج يحفظ بيانات التدريب ويفشل في التعميم على بيانات جديدة'},
   {c:'ds', en:'feature engineering', ex:'Good feature engineering improved our model’s accuracy significantly.', ar:'هندسة الخصائص: إنشاء متغيرات مفيدة من البيانات الخام'},
@@ -628,7 +628,11 @@ const CARDS = [
   {c:'work', en:'scope', ex:'That request is outside the scope of this project.', ar:'نطاق المشروع: حدود ما يشمله وما لا يشمله'},
   {c:'work', en:'handover', ex:'I prepared a handover document before my vacation.', ar:'تسليم المهام والمعلومات لشخص آخر'},
 ];
-const CARD_BY_EN = Object.fromEntries(CARDS.map(c=>[c.en,c]));
+let ALL_CARDS = [], CARD_BY_EN = {};
+function rebuildCards(){
+  ALL_CARDS = CARDS.concat((state.custom||[]).map(c=>({c:'my', en:c.en, ex:c.ex, ar:c.ar, custom:true})));
+  CARD_BY_EN = Object.fromEntries(ALL_CARDS.map(c=>[c.en,c]));
+}
 
 const QUESTIONS = [
   {t:'عن نفسك', q:'Tell me about yourself.'},
@@ -700,6 +704,9 @@ const state = {
   dayKinds: {},              // {'YYYY-MM-DD': {write:n, iv:n, sent:n, rev:n}}
   srs: {},                   // {en: {l:0-5, due:'YYYY-MM-DD'}}
   intro: { date:null, terms:[] },  // today's new-word batch
+  custom: [],                // user-added cards [{en, ex, ar}]
+  sentCount: {},             // {en: n} accepted (different) sentences
+  sentences: {},             // {en: [last accepted sentences]}
   apiKey: '',
 };
 
@@ -716,6 +723,8 @@ async function saveState(){ storageMode = await rawSet(STORE_KEY, JSON.stringify
 async function loadState(){
   const raw = await rawGet(STORE_KEY);
   if (raw){ try{ Object.assign(state, JSON.parse(raw)); }catch(e){} }
+  state.custom = Array.isArray(state.custom) ? state.custom : [];
+  rebuildCards();
   // migrate v1 → v2
   if (!state.v || state.v < 2){
     state.v = 2;
@@ -727,6 +736,8 @@ async function loadState(){
   state.dayKinds = state.dayKinds || {};
   state.srs = state.srs || {};
   state.intro = state.intro || {date:null, terms:[]};
+  state.sentCount = state.sentCount || {};
+  state.sentences = state.sentences || {};
   storageMode = await rawSet(STORE_KEY+'.probe', '1');
 }
 function recordExercise(kind){
@@ -778,9 +789,10 @@ function gradeCard(en, g){ // g: 'again' | 'hard' | 'easy'
 function addToSrs(en){
   if (!state.srs[en]){ state.srs[en] = {l:0, due: todayStr(1)}; saveState(); }
 }
+function sCount(en){ return state.sentCount[en]||0; }
 function srsBuckets(){
   const b = {mastered:0, learning:0, started:0, fresh:0};
-  CARDS.forEach(c=>{
+  ALL_CARDS.forEach(c=>{
     const e = state.srs[c.en];
     if (!e) b.fresh++;
     else if (e.l >= 4) b.mastered++;
@@ -949,7 +961,7 @@ function renderToday(){
   const items = [
     {k:'review', ic:'📚', title:'راجع كلماتك', sub: p.review.count ? p.review.count+' كلمة مستحقة للمراجعة' : 'لا توجد مراجعات مستحقة اليوم', done: p.review.done, go: ()=>{ switchView('words'); setWordMode('review'); }},
     {k:'fresh', ic:'✨', title:'كلمات جديدة', sub: p.fresh.exhausted ? 'أنهيت كل كلمات البنك — ما شاء الله!' : (p.fresh.count ? p.fresh.count+' كلمات بانتظارك' : 'أخذت كلمات اليوم'), done: p.fresh.done, go: ()=>{ switchView('words'); setWordMode('new'); }},
-    {k:'sent', ic:'🧩', title:'ثبّت كلمة بجملة', sub:'اكتب جملة بكلمة تتعلمها والـ AI يقيّمها', done: p.sent.done, go: ()=>{ switchView('words'); setWordMode('sent'); }},
+    {k:'sent', ic:'🧩', title:'ثبّت كلمة بجملة', sub:'هدفك ٣ جمل مختلفة لكل كلمة — والـ AI يقيّمها', done: p.sent.done, go: ()=>{ switchView('words'); setWordMode('sent'); }},
     {k:'write', ic:'✍️', title:'تمرين كتابة', sub:'نص واحد يومياً يصنع فرقاً كبيراً', done: p.write.done, go: ()=> switchView('write')},
     {k:'iv', ic:'🎤', title:'سؤال مقابلة', sub:'جاوب سؤالاً واحداً وتعلم من النسخة المحسّنة', done: p.iv.done, go: ()=> switchView('interview')},
   ];
@@ -1002,10 +1014,6 @@ function setWordMode(m){
     newQueue = todayNewBatch().filter(en=>!state.srs[en]);
     newPos = 0;
   }
-  if (m === 'sent' && !sentWord){
-    const pool = Object.keys(state.srs).filter(en=>CARD_BY_EN[en]);
-    sentWord = pool.length ? pool[Math.floor(Math.random()*pool.length)] : CARDS[0].en;
-  }
   renderWords();
 }
 function renderWordPills(){
@@ -1016,6 +1024,7 @@ function renderWordPills(){
     {k:'new', label:'جديدة', cnt: fresh, hot:false},
     {k:'sent', label:'جملتي 🧩'},
     {k:'browse', label:'تصفح'},
+    {k:'add', label:'أضف ⭐'},
   ];
   $('wordPills').innerHTML = pills.map(p=>`
     <button class="pill ${wordMode===p.k?'active':''}" data-mode="${p.k}">
@@ -1031,14 +1040,27 @@ function renderWords(){
   if (wordMode === 'review') return renderReview(area);
   if (wordMode === 'new') return renderNew(area);
   if (wordMode === 'sent') return renderSent(area);
+  if (wordMode === 'add') return renderAdd(area);
   return renderBrowse(area);
 }
 
 /* --- review mode --- */
+let lastGraded = null;
+function sentNudgeHTML(){
+  if (!lastGraded || !hasAI() || sCount(lastGraded) >= 3) return '';
+  return `<div class="notice" style="display:flex; align-items:center; justify-content:space-between; gap:10px">
+    <span>🧩 ثبّت «<span class="en">${esc(lastGraded)}</span>» بجملة مختلفة (${sCount(lastGraded)}/3)</span>
+    <button class="btn btn-soft btn-sm" id="revToSent" style="flex:none">اكتبها الآن</button>
+  </div>`;
+}
+function bindSentNudge(){
+  const b = $('revToSent'); if (!b) return;
+  b.addEventListener('click', ()=>{ sentWord = lastGraded; lastGraded = null; setWordMode('sent'); });
+}
 function renderReview(area){
   if (!reviewQueue.length){
     const anyLearned = Object.keys(state.srs).length > 0;
-    area.innerHTML = `
+    area.innerHTML = sentNudgeHTML() + `
       <div class="empty-state">
         <div class="big">${reviewDone ? '🎉' : '🌿'}</div>
         ${reviewDone
@@ -1047,11 +1069,12 @@ function renderReview(area){
             ? '<p><b>لا توجد مراجعات مستحقة اليوم.</b></p><p style="margin-top:6px">خذ كلمات جديدة أو تصفح البنك.</p>'
             : '<p><b>ما بدأت بعد!</b></p><p style="margin-top:6px">ابدأ من «جديدة» — خذ أول ٥ كلمات لك اليوم.</p>'}
       </div>`;
+    bindSentNudge();
     return;
   }
   const en = reviewQueue[0];
   const card = CARD_BY_EN[en];
-  area.innerHTML = `
+  area.innerHTML = sentNudgeHTML() + `
     ${flashHTML(card, {hideExample:true})}
     <div class="grade-row" id="gradeRow">
       <button class="btn g-again" data-g="again">نسيتها<span class="g-sub">تعود غداً</span></button>
@@ -1061,9 +1084,11 @@ function renderReview(area){
     <p class="flash-progress">متبقي ${reviewQueue.length} · راجعت ${reviewDone}</p>
     <p class="muted-note" style="text-align:center; margin-top:6px">اقلب البطاقة أولاً وتذكر المعنى، ثم قيّم نفسك بصدق — الصدق هو اللي يخلي الجدولة تشتغل لصالحك.</p>`;
   bindFlip();
+  bindSentNudge();
   $('gradeRow').querySelectorAll('button').forEach(b=>{
     b.addEventListener('click', ()=>{
       gradeCard(en, b.dataset.g);
+      lastGraded = (b.dataset.g !== 'again' && sCount(en) < 3) ? en : null;
       reviewQueue.shift();
       reviewDone++;
       renderWords();
@@ -1102,38 +1127,73 @@ function renderNew(area){
   });
 }
 
-/* --- sentence practice mode --- */
-function renderSent(area){
+/* --- sentence practice mode (3 different sentences per word) --- */
+function sentPool(){
   const learned = Object.keys(state.srs).filter(en=>CARD_BY_EN[en]);
-  const pool = learned.length ? learned : CARDS.map(c=>c.en);
+  // words still needing sentences first, then the rest
+  return learned.sort((a,b)=> (sCount(a)>=3?1:0) - (sCount(b)>=3?1:0));
+}
+function renderSent(area){
+  const pool = sentPool();
+  if (!pool.length){
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="big">🧩</div>
+        <p><b>ما عندك كلمات قيد التعلم بعد.</b></p>
+        <p style="margin-top:6px">خذ كلمات من «جديدة» أو أضف كلماتك من «أضف ⭐»، وارجع هنا لتثبيتها بالجمل.</p>
+      </div>`;
+    return;
+  }
   if (!sentWord || !pool.includes(sentWord)) sentWord = pool[0];
   const card = CARD_BY_EN[sentWord];
+  const n = sCount(sentWord);
+  const prev = state.sentences[sentWord] || [];
+  const dots = [0,1,2].map(i=>`<span style="opacity:${i < Math.min(n,3) ? 1 : .22}">●</span>`).join('');
   area.innerHTML = `
     <div class="card">
+      <div class="q-meta">
+        <select class="q-select" id="sentSelect" aria-label="اختر الكلمة">
+          ${pool.map(en=>`<option value="${esc(en)}" ${en===sentWord?'selected':''}>${esc(en)} — ${Math.min(3,sCount(en))}/3 ${sCount(en)>=3?'🏆':''}</option>`).join('')}
+        </select>
+        <button class="btn btn-soft btn-sm" id="wtShuffle" title="كلمة تحتاج جملاً">🎲</button>
+      </div>
       <div class="word-target">
         <div>
           <div class="wt-en">${esc(card.en)}</div>
           <div class="wt-ar hidden" id="wtMeaning">${esc(card.ar)}</div>
         </div>
-        <span>
+        <span style="text-align:center">
+          <span style="font-size:16px; color:var(--accent); letter-spacing:3px" title="جمل ناجحة">${dots}</span><br>
           <button class="meaning-toggle" id="wtToggle">أظهر المعنى</button>
-          <button class="meaning-toggle" id="wtShuffle">🔀 كلمة أخرى</button>
         </span>
       </div>
-      <p class="muted-note" style="margin-bottom:10px">اكتب جملة من عندك (عن شغلك، مشروعك، حياتك…) تستخدم فيها هذه الكلمة استخداماً صحيحاً. هذا أقوى تمرين لتثبيت الكلمة في ذاكرتك.</p>
-      <textarea id="sentInput" class="input-en" style="min-height:100px" placeholder="Write one sentence using “${esc(card.en)}”..."></textarea>
+      <p class="muted-note" style="margin-bottom:10px">${
+        n >= 3
+        ? '🏆 ثبّت هذه الكلمة بثلاث جمل مختلفة! تقدر تكمل أكثر أو تنتقل لكلمة ثانية.'
+        : (prev.length
+            ? 'هدفك <b>٣ جمل مختلفة</b> — اكتب جملة بسياق جديد يختلف عن جملك السابقة، الجمل المتشابهة ما تنحسب.'
+            : 'هدفك <b>٣ جمل مختلفة</b> لكل كلمة — عن شغلك، مشروعك، حياتك… التنويع هو اللي يثبّت الكلمة فعلاً.')
+      }</p>
+      ${prev.length ? `
+      <details style="margin-bottom:10px">
+        <summary class="muted-note" style="cursor:pointer">جملك السابقة (${prev.length})</summary>
+        <div class="en-panel" style="margin-top:8px">${prev.map(esc).join('\n')}</div>
+      </details>` : ''}
+      <textarea id="sentInput" class="input-en" style="min-height:100px" placeholder="Write a new sentence using “${esc(card.en)}”..."></textarea>
       <div style="margin-top:12px">
         <button class="btn btn-primary btn-block" id="sentGo">قيّم جملتي</button>
       </div>
     </div>
     <div id="sentResult"></div>`;
+  $('sentSelect').addEventListener('change', ()=>{ sentWord = $('sentSelect').value; renderWords(); });
   $('wtToggle').addEventListener('click', ()=>{
     const m = $('wtMeaning');
     m.classList.toggle('hidden');
     $('wtToggle').textContent = m.classList.contains('hidden') ? 'أظهر المعنى' : 'أخف المعنى';
   });
   $('wtShuffle').addEventListener('click', ()=>{
-    const others = pool.filter(en=>en!==sentWord);
+    const need = pool.filter(en=>en!==sentWord && sCount(en)<3);
+    const others = need.length ? need : pool.filter(en=>en!==sentWord);
     sentWord = others.length ? others[Math.floor(Math.random()*others.length)] : sentWord;
     renderWords();
   });
@@ -1141,21 +1201,32 @@ function renderSent(area){
     const s = $('sentInput').value.trim();
     const out = $('sentResult');
     if (wordCount(s) < 4){ out.innerHTML = '<div class="notice">اكتب جملة كاملة من ٤ كلمات على الأقل 🙂</div>'; return; }
+    const norm = x=>x.toLowerCase().replace(/[^a-z0-9؀-ۿ ]/g,'').replace(/\s+/g,' ').trim();
+    if (prev.some(p=>norm(p)===norm(s))){
+      out.innerHTML = '<div class="notice">هذي نفس جملة سابقة حرفياً 🙂 — جرّب سياقاً مختلفاً تماماً.</div>';
+      return;
+    }
     setLoading($('sentGo'), true, 'جاري التقييم…');
     out.innerHTML = '';
+    const prevBlock = prev.length ? `
+He already wrote these sentences for this word before:
+${prev.map(p=>'- '+p).join('\n')}
+The NEW sentence must use a genuinely different context, structure, or idea. If it is essentially a rephrasing of a previous sentence, set "is_different": false and explain in diff_ar what a different context could be.` : '';
     const prompt = `${LEARNER_CONTEXT}
 
-The learner is practicing the word/phrase "${card.en}" (meaning in Arabic: ${card.ar}). He wrote this sentence to practice using it:
+The learner is practicing the word/phrase "${card.en}" (meaning in Arabic: ${card.ar}).${prevBlock}
 
-SENTENCE:
+He wrote this NEW sentence to practice using it:
 <<<${s}>>>
 
-Evaluate: did he use "${card.en}" correctly and naturally? Also check the sentence's overall English.
+Evaluate: did he use "${card.en}" correctly and naturally? Is the sentence genuinely different from his previous ones? Also check the sentence's overall English.
 
 ${JSON_RULES}
 Schema:
 {
  "used_correctly": true,
+ "is_different": true,
+ "diff_ar": "إن لم تكن مختلفة: اقتراح سياق مختلف بالعربي. وإن كانت مختلفة اترك النص فارغاً",
  "score": 8,
  "praise_ar": "جملة تشجيع قصيرة بالعربي",
  "verdict_ar": "حكم مختصر بالعربي: هل استخدم الكلمة صح؟ ولماذا؟",
@@ -1169,12 +1240,28 @@ score is 1-10 for the sentence quality.`;
     try{
       const raw = await askClaude(prompt);
       const r = extractJSON(raw);
-      const ok = !!r.used_correctly;
+      const okUse = !!r.used_correctly;
+      const okDiff = prev.length === 0 || r.is_different !== false;
+      const accepted = okUse && okDiff;
+      let banner;
+      if (accepted){
+        state.sentences[card.en] = (state.sentences[card.en]||[]).concat(s).slice(-5);
+        state.sentCount[card.en] = (state.sentCount[card.en]||0) + 1;
+        const e = state.srs[card.en];
+        if (e){ e.l = Math.min(5, e.l+1); e.due = todayStr(INTERVALS[e.l]); }
+        else addToSrs(card.en);
+        const total = state.sentCount[card.en];
+        banner = total === 3
+          ? `<div class="celebrate">🏆 ثبّت «${esc(card.en)}» بثلاث جمل مختلفة — هذي الكلمة صارت لك!</div>`
+          : `<div class="praise">🎯 انحسبت! (${Math.min(3,total)}/3) — ${esc(r.verdict_ar||'')}</div>`;
+      } else if (!okDiff){
+        banner = `<div class="notice">🔁 الجملة تشبه جملك السابقة فما انحسبت. ${esc(r.diff_ar||'جرّب سياقاً مختلفاً تماماً.')}</div>`;
+      } else {
+        banner = `<div class="notice">🤏 ${esc(r.verdict_ar||'الاستخدام غير دقيق — اقرأ الملاحظات وحاول مرة ثانية.')}</div>`;
+      }
       out.innerHTML = `
         <div class="card">
-          <div class="praise" style="${ok?'':'background:var(--amber-soft); color:var(--amber)'}">
-            ${ok?'🎯':'🤏'} ${esc(r.verdict_ar||'')}
-          </div>
+          ${banner}
           <div class="result-block">
             <span class="result-label">ملاحظات (${(r.errors||[]).length})</span>
             ${errorsHTML(r.errors)}
@@ -1188,13 +1275,21 @@ score is 1-10 for the sentence quality.`;
             <p style="font-size:14.5px">${esc(r.bonus_ar||'')}</p>
           </div>
           <div class="result-block praise">🌟 ${esc(r.praise_ar||'')}</div>
+          ${accepted ? `<div class="result-block copy-row" style="justify-content:center">
+            <button class="btn btn-primary btn-sm" id="sentNext">${sCount(card.en)>=3 ? 'كلمة ثانية ←' : 'جملة ثانية بنفس الكلمة ✍️'}</button>
+          </div>` : ''}
         </div>`;
-      if (ok){
-        const e = state.srs[card.en];
-        if (e){ e.l = Math.min(5, e.l+1); e.due = todayStr(INTERVALS[e.l]); }
-        else addToSrs(card.en);
+      if (accepted){
+        recordExercise('sent');
+        const nx = $('sentNext');
+        if (nx) nx.addEventListener('click', ()=>{
+          if (sCount(card.en) >= 3){
+            const need = sentPool().filter(en=>en!==card.en && sCount(en)<3);
+            if (need.length) sentWord = need[Math.floor(Math.random()*need.length)];
+          }
+          renderWords();
+        });
       }
-      recordExercise('sent');
     }catch(err){
       out.innerHTML = aiErrorHTML(err);
     }finally{
@@ -1204,39 +1299,130 @@ score is 1-10 for the sentence quality.`;
   });
 }
 
+/* --- add my word mode --- */
+function renderAdd(area){
+  const mine = state.custom;
+  area.innerHTML = `
+    <div class="card">
+      <h3 style="font-size:15px; margin-bottom:6px">أضف كلمتك ⭐</h3>
+      <p class="muted-note" style="margin-bottom:12px">صادفت كلمة في مقال أو فيديو أو وصف وظيفة؟ أضفها هنا وبتدخل جدول مراجعاتك مثل باقي الكلمات — والذكاء الاصطناعي يجهز لك المعنى والمثال.</p>
+      <div class="settings-row">
+        <input id="addEn" placeholder="the word or phrase (English)" autocomplete="off">
+        <button class="btn btn-soft btn-sm" id="addGen">🪄 ولّد المعنى والمثال تلقائياً</button>
+        <input id="addAr" placeholder="المعنى بالعربي" style="direction:rtl; text-align:right">
+        <input id="addEx" placeholder="Example sentence (English)">
+        <button class="btn btn-primary" id="addSave">احفظها وأضفها لمراجعاتي ✓</button>
+      </div>
+      <div id="addMsg" style="margin-top:10px"></div>
+    </div>
+    ${mine.length ? `
+    <div class="card">
+      <h3 style="font-size:15px; margin-bottom:8px">كلماتك (${mine.length})</h3>
+      <p class="muted-note en" style="direction:ltr">${mine.map(c=>esc(c.en)).join(' · ')}</p>
+      <p class="muted-note" style="margin-top:8px">تلقاها في «تصفح ← كلماتي ⭐» ومن هناك تقدر تحذف أي وحدة.</p>
+    </div>` : ''}`;
+  $('addGen').addEventListener('click', async ()=>{
+    const en = $('addEn').value.trim();
+    const msg = $('addMsg');
+    if (!en){ msg.innerHTML = '<div class="notice">اكتب الكلمة الإنجليزية أولاً 🙂</div>'; return; }
+    setLoading($('addGen'), true, 'جاري التوليد…');
+    msg.innerHTML = '';
+    const prompt = `${LEARNER_CONTEXT}
+
+The learner wants to add the English word/phrase "${en}" to his flashcards.
+
+${JSON_RULES}
+Schema:
+{
+ "ar": "معنى عربي واضح ومختصر بأسلوب بطاقة تعليمية، مع لمسة توضح متى تُستخدم",
+ "ex": "one natural, professional English example sentence (work or data-science context when it fits)"
+}`;
+    try{
+      const raw = await askClaude(prompt);
+      const r = extractJSON(raw);
+      $('addAr').value = r.ar || '';
+      $('addEx').value = r.ex || '';
+      msg.innerHTML = '<div class="praise">✓ جاهزة — عدّل ما تشاء ثم احفظها.</div>';
+    }catch(err){
+      msg.innerHTML = aiErrorHTML(err);
+    }finally{
+      setLoading($('addGen'), false);
+    }
+  });
+  $('addSave').addEventListener('click', ()=>{
+    const en = $('addEn').value.trim();
+    const ar = $('addAr').value.trim();
+    const ex = $('addEx').value.trim();
+    const msg = $('addMsg');
+    if (!en || !ar){ msg.innerHTML = '<div class="notice">أقل شيء: الكلمة الإنجليزية + معناها بالعربي (أو اضغط زر التوليد 🪄).</div>'; return; }
+    if (CARD_BY_EN[en]){ msg.innerHTML = '<div class="notice">هذي الكلمة موجودة عندك أصلاً 🙂</div>'; return; }
+    state.custom.push({en, ar, ex});
+    rebuildCards();
+    state.srs[en] = {l:0, due: todayStr()};
+    saveState();
+    renderWordsBadge();
+    $('addEn').value = ''; $('addAr').value = ''; $('addEx').value = '';
+    msg.innerHTML = `
+      <div class="praise" style="flex-direction:column; align-items:stretch; gap:10px">
+        <span>⭐ أضفت «<span class="en">${esc(en)}</span>» — دخلت مراجعاتك من اليوم!</span>
+        <button class="btn btn-primary btn-sm" id="addToSent">🧩 اكتب أول جملة بها الآن (0/3)</button>
+      </div>`;
+    $('addToSent').addEventListener('click', ()=>{ sentWord = en; setWordMode('sent'); });
+  });
+}
+
 /* --- browse mode --- */
 function renderBrowse(area){
-  if (browseCat !== 'all') browseDeck = CARDS.filter(c=>c.c===browseCat);
-  else if (browseDeck.length !== CARDS.length) browseDeck = [...CARDS];
-  if (browsePos >= browseDeck.length) browsePos = 0;
-  const card = browseDeck[browsePos];
-  const chips = [['all','الكل ('+CARDS.length+')'], ...Object.entries(CATS).map(([k,v])=>[k, v+' ('+CARDS.filter(c=>c.c===k).length+')'])];
-  area.innerHTML = `
+  const source = browseCat==='all' ? ALL_CARDS : ALL_CARDS.filter(c=>c.c===browseCat);
+  if (browseDeck._cat !== browseCat || browseDeck.length !== source.length){
+    browseDeck = [...source]; browseDeck._cat = browseCat; browsePos = 0;
+  }
+  const chips = [['all','الكل ('+ALL_CARDS.length+')'], ...Object.entries(CATS).map(([k,v])=>[k, v+' ('+ALL_CARDS.filter(c=>c.c===k).length+')'])];
+  const chipsHTML = `
     <div class="chips" id="catChips">
       ${chips.map(([k,label])=>`<button class="chip ${k===browseCat?'active':''}" data-cat="${k}">${label}</button>`).join('')}
-    </div>
-    ${flashHTML(card)}
-    <div class="flash-controls">
-      <button class="btn btn-ghost btn-sm" id="brPrev">السابقة</button>
-      ${state.srs[card.en] ? '' : '<button class="btn btn-soft btn-sm" id="brAdd">أضفها لمراجعاتي +</button>'}
-      <button class="btn btn-ghost btn-sm" id="brShuffle">خلط 🔀</button>
-      <button class="btn btn-primary btn-sm" id="brNext">التالية</button>
-    </div>
-    <p class="flash-progress">البطاقة ${browsePos+1} من ${browseDeck.length}</p>`;
-  bindFlip();
+    </div>`;
+  if (!browseDeck.length){
+    area.innerHTML = chipsHTML + `
+      <div class="empty-state">
+        <div class="big">⭐</div>
+        <p><b>ما أضفت كلمات خاصة بعد.</b></p>
+        <p style="margin-top:6px">أضف أول كلمة من تبويب «أضف ⭐».</p>
+      </div>`;
+  } else {
+    if (browsePos >= browseDeck.length) browsePos = 0;
+    const card = browseDeck[browsePos];
+    area.innerHTML = chipsHTML + `
+      ${flashHTML(card)}
+      <div class="flash-controls">
+        <button class="btn btn-ghost btn-sm" id="brPrev">السابقة</button>
+        ${state.srs[card.en] ? '' : '<button class="btn btn-soft btn-sm" id="brAdd">أضفها لمراجعاتي +</button>'}
+        <button class="btn btn-ghost btn-sm" id="brShuffle">خلط 🔀</button>
+        <button class="btn btn-primary btn-sm" id="brNext">التالية</button>
+      </div>
+      <p class="flash-progress">البطاقة ${browsePos+1} من ${browseDeck.length}${sCount(card.en) ? ` · جمل ${Math.min(3,sCount(card.en))}/3` : ''}</p>
+      ${card.custom ? `<p style="text-align:center; margin-top:6px"><button class="danger-link" id="brDel">حذف هذه الكلمة</button></p>` : ''}`;
+    bindFlip();
+    $('brNext').addEventListener('click', ()=>{ browsePos=(browsePos+1)%browseDeck.length; renderWords(); });
+    $('brPrev').addEventListener('click', ()=>{ browsePos=(browsePos-1+browseDeck.length)%browseDeck.length; renderWords(); });
+    $('brShuffle').addEventListener('click', ()=>{
+      const cat = browseDeck._cat;
+      for (let i=browseDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [browseDeck[i],browseDeck[j]]=[browseDeck[j],browseDeck[i]]; }
+      browseDeck._cat = cat; browsePos=0; renderWords();
+    });
+    const addBtn = $('brAdd');
+    if (addBtn) addBtn.addEventListener('click', ()=>{ addToSrs(card.en); renderWordsBadge(); renderWords(); });
+    const delBtn = $('brDel');
+    if (delBtn) delBtn.addEventListener('click', ()=>{
+      if (!confirm('حذف «'+card.en+'» نهائياً مع تقدمها؟')) return;
+      state.custom = state.custom.filter(c=>c.en!==card.en);
+      delete state.srs[card.en]; delete state.sentCount[card.en]; delete state.sentences[card.en];
+      rebuildCards(); saveState(); renderWordsBadge(); renderWords();
+    });
+  }
   area.querySelectorAll('#catChips .chip').forEach(ch=>ch.addEventListener('click', ()=>{
-    browseCat = ch.dataset.cat; browsePos = 0;
-    browseDeck = browseCat==='all' ? [...CARDS] : CARDS.filter(c=>c.c===browseCat);
-    renderWords();
+    browseCat = ch.dataset.cat; renderWords();
   }));
-  $('brNext').addEventListener('click', ()=>{ browsePos=(browsePos+1)%browseDeck.length; renderWords(); });
-  $('brPrev').addEventListener('click', ()=>{ browsePos=(browsePos-1+browseDeck.length)%browseDeck.length; renderWords(); });
-  $('brShuffle').addEventListener('click', ()=>{
-    for (let i=browseDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [browseDeck[i],browseDeck[j]]=[browseDeck[j],browseDeck[i]]; }
-    browsePos=0; renderWords();
-  });
-  const addBtn = $('brAdd');
-  if (addBtn) addBtn.addEventListener('click', ()=>{ addToSrs(card.en); renderWordsBadge(); renderWords(); });
 }
 
 /* ==================================================================
@@ -1411,7 +1597,7 @@ function renderProgress(){
   }
   $('daysRow').innerHTML = html;
   // vocab journey bar
-  const total = CARDS.length;
+  const total = ALL_CARDS.length;
   const segs = [
     ['متقنة', b.mastered, 'var(--accent)'],
     ['قيد التعلم', b.learning, 'var(--amber)'],
@@ -1419,7 +1605,11 @@ function renderProgress(){
     ['لم تبدأ', b.fresh, 'var(--surface2)'],
   ];
   $('lvlBar').innerHTML = segs.map(([_,n,c])=>`<i style="width:${(n/total*100).toFixed(1)}%; background:${c}"></i>`).join('');
-  $('lvlLegend').innerHTML = segs.map(([label,n,c])=>`<span><span class="dot" style="background:${c}"></span>${label} <b>${n}</b></span>`).join('');
+  const nSent3 = ALL_CARDS.filter(c=>sCount(c.en)>=3).length;
+  const nCustom = state.custom.length;
+  $('lvlLegend').innerHTML = segs.map(([label,n,c])=>`<span><span class="dot" style="background:${c}"></span>${label} <b>${n}</b></span>`).join('')
+    + `<span>🧩 مثبتة بثلاث جمل <b>${nSent3}</b></span>`
+    + (nCustom ? `<span>⭐ كلماتك <b>${nCustom}</b></span>` : '');
   const modeAr = {storage:'التخزين الدائم متاح ✓ — تقدمك محفوظ بين الجلسات.', local:'تقدمك محفوظ في متصفحك على هذا الجهاز.', memory:'⚠️ التخزين الدائم غير متاح — بياناتك ستُفقد عند إغلاق الصفحة.'};
   $('storageNote').textContent = modeAr[storageMode];
 }
@@ -1446,10 +1636,12 @@ $('apiKeySave').addEventListener('click', async ()=>{
   setTimeout(()=> $('apiKeySave').textContent = 'حفظ المفتاح', 1500);
 });
 $('resetAll').addEventListener('click', async ()=>{
-  if (!confirm('متأكد؟ بيتم حذف السلسلة والتمارين وكل تقدم الكلمات.')) return;
+  if (!confirm('متأكد؟ بيتم حذف السلسلة والتمارين وكل تقدم الكلمات وكلماتك الخاصة.')) return;
   state.streakCount=0; state.lastDate=null;
   state.totals={write:0,iv:0,sent:0,rev:0}; state.history={}; state.dayKinds={};
   state.srs={}; state.intro={date:null,terms:[]};
+  state.custom=[]; state.sentCount={}; state.sentences={};
+  rebuildCards();
   await saveState();
   renderHeader(); renderProgress(); renderToday(); renderWordsBadge();
 });
