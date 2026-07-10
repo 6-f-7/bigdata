@@ -854,6 +854,42 @@ async function askClaude(prompt){
   }
   throw new Error('no-ai');
 }
+/* free card generation — dictionary + translation, no key needed */
+async function freeCardGen(word){
+  const w = word.trim();
+  let defEn = '', ex = '';
+  if (!/\s/.test(w)){
+    try{
+      const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(w.toLowerCase()));
+      if (r.ok){
+        const d = await r.json();
+        outer:
+        for (const entry of (Array.isArray(d)?d:[])){
+          for (const m of (entry.meanings||[])){
+            for (const def of (m.definitions||[])){
+              if (!defEn) defEn = def.definition||'';
+              if (!ex && def.example) ex = def.example;
+              if (defEn && ex) break outer;
+            }
+          }
+        }
+      }
+    }catch(e){}
+  }
+  let ar = '';
+  try{
+    const q = (defEn || w).slice(0, 450);
+    const r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=en|ar');
+    if (r.ok){
+      const d = await r.json();
+      const t = (d && d.responseData && d.responseData.translatedText) || '';
+      if (t && !/MYMEMORY WARNING/i.test(t)) ar = t;
+    }
+  }catch(e){}
+  if (!ar && !defEn) throw new Error('dict-fail');
+  return { ar: ar || defEn, ex };
+}
+
 function extractJSON(text){
   let t = String(text).trim();
   t = t.replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'');
@@ -1358,13 +1394,27 @@ Schema:
  "ex": "one natural, professional English example sentence (work or data-science context when it fits)"
 }`;
     try{
-      const raw = await askClaude(prompt);
-      const r = extractJSON(raw);
-      $('addAr').value = r.ar || '';
-      $('addEx').value = r.ex || '';
-      msg.innerHTML = '<div class="praise">✓ جاهزة — عدّل ما تشاء ثم احفظها.</div>';
+      if (hasAI()){
+        try{
+          const raw = await askClaude(prompt);
+          const r = extractJSON(raw);
+          $('addAr').value = r.ar || '';
+          $('addEx').value = r.ex || '';
+          msg.innerHTML = '<div class="praise">✓ جاهزة بالذكاء الاصطناعي — عدّل ما تشاء ثم احفظها.</div>';
+        }catch(e){
+          const r = await freeCardGen(en);
+          $('addAr').value = r.ar || '';
+          $('addEx').value = r.ex || '';
+          msg.innerHTML = '<div class="praise">✓ جاهزة من القاموس المجاني — راجع المعنى وعدّله لو حبيت.</div>';
+        }
+      } else {
+        const r = await freeCardGen(en);
+        $('addAr').value = r.ar || '';
+        $('addEx').value = r.ex || '';
+        msg.innerHTML = '<div class="praise">✓ جاهزة من القاموس المجاني — راجع المعنى وعدّله لو حبيت.</div>';
+      }
     }catch(err){
-      msg.innerHTML = aiErrorHTML(err);
+      msg.innerHTML = '<div class="notice err">تعذّر التوليد هنا (لا ذكاء اصطناعي ولا اتصال بالقاموس). اكتب المعنى يدوياً، أو افتح التطبيق من موقعك <span class="en">6-f-7.github.io/bigdata</span> حيث يعمل القاموس المجاني دائماً.</div>';
     }finally{
       setLoading($('addGen'), false);
     }
@@ -1638,7 +1688,7 @@ function renderAINotice(){
   if (hasAI()){ notice.classList.add('hidden'); }
   else {
     notice.classList.remove('hidden');
-    notice.textContent = 'ميزات التصحيح والتقييم تحتاج اتصالاً بالذكاء الاصطناعي: افتح التطبيق داخل Claude، أو أضف مفتاح Anthropic API من تبويب «تقدمي». البطاقات والمراجعة تعمل بدون اتصال.';
+    notice.textContent = 'البطاقات والمراجعة وتوليد معاني كلماتك (بالقاموس المجاني) تعمل هنا مباشرة. أما تصحيح الكتابة وتقييم المقابلات والجمل فتحتاج مفتاح Anthropic API من تبويب «تقدمي».';
   }
   if (hasArtifactAI()){
     $('apiKeyNote').textContent = 'أنت داخل Claude — الذكاء الاصطناعي يعمل تلقائياً بدون أي إعداد ✓';
