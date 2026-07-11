@@ -275,15 +275,32 @@ textarea.input-en::placeholder{color:var(--muted); opacity:.75}
 .chip.active{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 .flash-stage{perspective:1200px; margin-bottom:14px}
 .flash-card{
-  position:relative; width:100%; min-height:290px; cursor:pointer;
+  position:relative; width:100%; min-height:360px; cursor:pointer;
   transform-style:preserve-3d; transition:transform .45s cubic-bezier(.2,.7,.3,1);
 }
 .flash-card.flipped{transform:rotateY(180deg)}
 .flash-face{
   position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-  box-shadow:var(--shadow); padding:22px;
-  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:13px;
+  box-shadow:var(--shadow); padding:20px;
+  display:flex; overflow-y:auto;
+}
+.flash-inner{
+  margin:auto; width:100%;
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:11px;
+}
+.mini-label{
+  font-size:10.5px; font-weight:800; letter-spacing:1px;
+  color:var(--accent); background:var(--accent-soft);
+  border-radius:999px; padding:2px 12px;
+}
+.flash-def{font-family:var(--font-en); direction:ltr; font-size:14.5px; color:var(--muted); line-height:1.6; max-width:48ch}
+.flash-exs{display:flex; flex-direction:column; gap:7px; width:100%; max-width:52ch}
+.flash-exs .exi{
+  font-family:var(--font-en); direction:ltr; text-align:left;
+  font-size:13.5px; line-height:1.6; color:var(--ink);
+  background:var(--surface2); border-inline-start:3px solid var(--accent-line);
+  border-radius:10px; padding:8px 12px; white-space:pre-wrap;
 }
 .flash-face.back{transform:rotateY(180deg)}
 .flash-cat{font-size:12px; font-weight:800; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:3px 12px}
@@ -377,6 +394,12 @@ select.q-select{
 .lvl-legend b{color:var(--ink); font-variant-numeric:tabular-nums}
 .dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-inline-end:4px}
 .settings-row{display:flex; flex-direction:column; gap:10px}
+.f-label{display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:700; color:var(--muted)}
+.f-label input, .f-label textarea{
+  width:100%; background:var(--surface2); border:1px solid var(--line);
+  border-radius:10px; padding:11px 13px; font-size:14.5px; direction:ltr; text-align:left;
+}
+.f-label textarea{resize:vertical; font-family:var(--font-en); line-height:1.6}
 .settings-row input{
   width:100%; background:var(--surface2); border:1px solid var(--line);
   border-radius:10px; padding:11px 13px; font-size:14px; direction:ltr; text-align:left;
@@ -550,88 +573,327 @@ document.documentElement.setAttribute('lang','ar');
 ================================================================== */
 const CATS = { ds:'علم البيانات', iv:'لغة المقابلات', mail:'إيميلات وكتابة', work:'إنجليزية العمل', my:'كلماتي ⭐' };
 const CARDS = [
-  {c:'ds', en:'overfitting', ex:'The model suffers from overfitting, so it performs poorly on new data.', ar:'فرط التخصيص: النموذج يحفظ بيانات التدريب ويفشل في التعميم على بيانات جديدة'},
-  {c:'ds', en:'feature engineering', ex:'Good feature engineering improved our model’s accuracy significantly.', ar:'هندسة الخصائص: إنشاء متغيرات مفيدة من البيانات الخام'},
-  {c:'ds', en:'outlier', ex:'We removed the outliers before training the model.', ar:'قيمة شاذة تختلف كثيراً عن باقي البيانات'},
-  {c:'ds', en:'data pipeline', ex:'I built an automated data pipeline that runs every night.', ar:'سلسلة معالجة البيانات من المصدر حتى النتيجة النهائية'},
-  {c:'ds', en:'baseline', ex:'Always compare your model against a simple baseline.', ar:'نموذج مرجعي بسيط تُقاس عليه أي نتائج لاحقة'},
-  {c:'ds', en:'hyperparameter tuning', ex:'Hyperparameter tuning took longer than expected.', ar:'ضبط المعاملات الفائقة لتحسين أداء النموذج'},
-  {c:'ds', en:'cross-validation', ex:'We used 5-fold cross-validation to evaluate the model.', ar:'التحقق المتقاطع: تقييم النموذج بتقسيم البيانات عدة مرات'},
-  {c:'ds', en:'imbalanced data', ex:'Fraud detection usually involves highly imbalanced data.', ar:'بيانات غير متوازنة: فئة تطغى على الأخرى بشكل كبير'},
-  {c:'ds', en:'data leakage', ex:'Data leakage made our results look better than they really were.', ar:'تسرب البيانات: معلومات من بيانات الاختبار تتسرب إلى التدريب'},
-  {c:'ds', en:'inference', ex:'The model takes 50 milliseconds per inference.', ar:'الاستدلال: استخدام النموذج للتنبؤ بعد تدريبه'},
-  {c:'ds', en:'deployment', ex:'We deployed the model to production last week.', ar:'نشر النموذج ليُستخدم فعلياً في بيئة الإنتاج'},
-  {c:'ds', en:'stakeholder', ex:'I presented the findings to the key stakeholders.', ar:'أصحاب المصلحة: الأشخاص المستفيدون من نتائج عملك'},
-  {c:'ds', en:'actionable insights', ex:'Our dashboard turns raw data into actionable insights.', ar:'رؤى قابلة للتنفيذ تُبنى عليها قرارات عملية'},
-  {c:'ds', en:'trade-off', ex:'There is a trade-off between model accuracy and interpretability.', ar:'موازنة بين خيارين متعارضين، كسبُ أحدهما على حساب الآخر'},
-  {c:'ds', en:'scalable', ex:'We need a scalable solution that handles millions of rows.', ar:'قابل للتوسع مع نمو حجم البيانات أو المستخدمين'},
-  {c:'ds', en:'exploratory data analysis', ex:'I always start with exploratory data analysis (EDA).', ar:'التحليل الاستكشافي: فهم البيانات قبل بناء أي نموذج'},
-  {c:'ds', en:'churn', ex:'Our model predicts customer churn with 85% accuracy.', ar:'تسرّب العملاء: توقفهم عن استخدام الخدمة'},
-  {c:'ds', en:'A/B testing', ex:'We ran an A/B test to compare the two designs.', ar:'اختبار مقارنة بين نسختين لمعرفة الأفضل بالبيانات'},
-  {c:'ds', en:'ground truth', ex:'We compared the predictions against the ground truth labels.', ar:'البيانات الحقيقية المرجعية التي تُقاس عليها التنبؤات'},
-  {c:'ds', en:'precision', ex:'High precision means few false alarms.', ar:'الدقة: نسبة صحة ما تنبأ به النموذج إيجابياً'},
-  {c:'ds', en:'recall', ex:'High recall means we catch most of the real cases.', ar:'الاستدعاء: نسبة الحالات الحقيقية التي التقطها النموذج'},
-  {c:'ds', en:'ETL', ex:'The ETL job extracts, transforms, and loads the data nightly.', ar:'استخراج البيانات وتحويلها وتحميلها — أساس هندسة البيانات'},
-  {c:'ds', en:'anomaly detection', ex:'We use anomaly detection to flag unusual transactions.', ar:'كشف الشذوذ: رصد الحالات غير الطبيعية تلقائياً'},
-  {c:'ds', en:'data-driven', ex:'We want every decision here to be data-driven.', ar:'مبني على البيانات لا على الانطباعات'},
-  {c:'ds', en:'model drift', ex:'Model drift degraded our accuracy after six months.', ar:'انحراف النموذج: تدهور أداؤه مع تغيّر البيانات بمرور الوقت'},
-  {c:'ds', en:'interpretability', ex:'Interpretability matters when you present models to executives.', ar:'قابلية التفسير: أن تقدر تشرح لماذا قرر النموذج ما قرره'},
-  {c:'iv', en:'I’m a recent graduate in…', ex:'I’m a recent data science graduate with hands-on project experience.', ar:'صيغة احترافية لتقديم نفسك كخريج جديد في بداية المقابلة'},
-  {c:'iv', en:'hands-on experience', ex:'I gained hands-on experience through my graduation project.', ar:'خبرة عملية مباشرة (وليست نظرية فقط)'},
-  {c:'iv', en:'My strength lies in…', ex:'My strength lies in translating data into clear decisions.', ar:'صيغة قوية للحديث عن نقاط قوتك بدون مبالغة'},
-  {c:'iv', en:'problem-solving skills', ex:'This project sharpened my problem-solving skills.', ar:'مهارات حل المشكلات — من أكثر العبارات طلباً في المقابلات'},
-  {c:'iv', en:'I’m eager to…', ex:'I’m eager to grow within a data-driven team.', ar:'متحمس وجاد في رغبتي أن… (أنسب من excited في السياق الرسمي)'},
-  {c:'iv', en:'collaborate', ex:'I collaborated with the marketing team to define the KPIs.', ar:'تعاونتُ مع — فعل أساسي عند الحديث عن العمل الجماعي'},
-  {c:'iv', en:'take ownership', ex:'I took ownership of the entire analysis phase.', ar:'تحمّلت المسؤولية الكاملة عن مهمة — تعبير يحبه المقابلون'},
-  {c:'iv', en:'overcome a challenge', ex:'The biggest challenge I overcame was cleaning messy real-world data.', ar:'تغلبت على تحدٍ — أساسية لأسئلة المواقف السلوكية'},
-  {c:'iv', en:'That’s a great question…', ex:'That’s a great question — let me think it through.', ar:'عبارة لبقة لكسب ثوانٍ للتفكير أثناء المقابلة'},
-  {c:'iv', en:'walk you through', ex:'Let me walk you through my approach step by step.', ar:'أشرح لك بالتفصيل خطوة بخطوة — مثالية لشرح مشاريعك'},
-  {c:'iv', en:'KPI (key performance indicator)', ex:'We chose retention rate as our main KPI.', ar:'مؤشر أداء رئيسي يُقاس به نجاح العمل'},
-  {c:'iv', en:'follow up on', ex:'I’d like to follow up on your question about deployment.', ar:'أعقّب على / أرجع لنقطة سابقة'},
-  {c:'iv', en:'In my previous project…', ex:'In my previous project, I analyzed customer behavior data.', ar:'طريقة سلسة لإدخال أمثلة من خبرتك في الإجابة'},
-  {c:'iv', en:'adaptable', ex:'I’m adaptable and comfortable with changing requirements.', ar:'مرن وسريع التأقلم مع المتغيرات'},
-  {c:'iv', en:'attention to detail', ex:'Data cleaning taught me real attention to detail.', ar:'الانتباه للتفاصيل — صفة جوهرية لمحلل البيانات'},
-  {c:'iv', en:'fast learner', ex:'I’m a fast learner — I picked up SQL in two weeks for my project.', ar:'سريع التعلم — واذكر دائماً دليلاً معها'},
-  {c:'iv', en:'end-to-end', ex:'I built the project end-to-end, from data collection to the final dashboard.', ar:'من البداية للنهاية — توحي بالاستقلالية والشمولية'},
-  {c:'iv', en:'Do you have any questions for us?', ex:'Yes — how does the data team measure its success?', ar:'سؤال نهاية المقابلة: حضّر دائماً سؤالاً ذكياً تسأله أنت'},
-  {c:'mail', en:'I hope this email finds you well', ex:'Dear Ms. Sarah, I hope this email finds you well.', ar:'تحية افتتاحية رسمية شائعة جداً في الإيميلات'},
-  {c:'mail', en:'I am writing to…', ex:'I am writing to apply for the Data Analyst position.', ar:'أكتب إليكم بخصوص… — افتتاحية مباشرة توضح هدف الإيميل'},
-  {c:'mail', en:'Please find attached…', ex:'Please find attached my resume and portfolio.', ar:'تجدون مرفقاً… — الصيغة القياسية للمرفقات'},
-  {c:'mail', en:'I would appreciate…', ex:'I would appreciate the opportunity to discuss my application.', ar:'سأكون ممتناً لو… — طلب مهذب وغير مباشر'},
-  {c:'mail', en:'Looking forward to hearing from you', ex:'Looking forward to hearing from you soon.', ar:'بانتظار ردكم — خاتمة مهنية لطيفة'},
-  {c:'mail', en:'Best regards', ex:'Best regards,\nMohammed', ar:'مع أطيب التحيات — الخاتمة الرسمية الأكثر أماناً'},
-  {c:'mail', en:'following up on', ex:'I’m following up on my previous email regarding the interview.', ar:'أتابع معكم بخصوص… — للتذكير بدون إحراج'},
-  {c:'mail', en:'Could you please clarify…?', ex:'Could you please clarify the project requirements?', ar:'هل يمكنكم توضيح…؟ — سؤال مهذب عند الغموض'},
-  {c:'mail', en:'Apologies for the delay', ex:'Apologies for the delayed response.', ar:'اعتذار مهني مختصر عن التأخير — بدون مبالغة'},
-  {c:'mail', en:'reach out', ex:'Feel free to reach out if you have any questions.', ar:'تواصل مع — بديل عصري واحترافي لكلمة contact'},
-  {c:'mail', en:'to summarize', ex:'To summarize, we agreed on three main deliverables.', ar:'للتلخيص — مفيدة في نهاية الإيميلات والاجتماعات'},
-  {c:'mail', en:'deliverable', ex:'The final deliverable is a dashboard and a short report.', ar:'مُخرَج نهائي يُسلَّم في نهاية العمل أو المشروع'},
-  {c:'mail', en:'Thank you for your time', ex:'Thank you for your time and consideration.', ar:'شكراً لوقتكم — خاتمة مثالية لإيميلات التقديم'},
-  {c:'mail', en:'as per…', ex:'As per our conversation, I’m sending the updated report.', ar:'بناءً على / حسب ما اتفقنا عليه'},
-  {c:'mail', en:'at your earliest convenience', ex:'Please review the file at your earliest convenience.', ar:'في أقرب وقت يناسبكم — استعجال مهذب'},
-  {c:'mail', en:'keep you posted', ex:'I’ll keep you posted on the progress.', ar:'سأبقيك على اطلاع بالمستجدات'},
-  {c:'mail', en:'on the same page', ex:'I want to make sure we’re on the same page before we start.', ar:'متفقون وفاهمون الشيء نفسه'},
-  {c:'mail', en:'kind reminder', ex:'Just a kind reminder about tomorrow’s deadline.', ar:'تذكير لطيف — لتذكير الآخرين بدون ضغط'},
-  {c:'work', en:'deadline', ex:'We’re on track to meet the deadline.', ar:'الموعد النهائي للتسليم'},
-  {c:'work', en:'on track', ex:'The project is on track and will finish on time.', ar:'يسير حسب الخطة'},
-  {c:'work', en:'bottleneck', ex:'Data collection was the main bottleneck in the project.', ar:'عنق الزجاجة: النقطة التي تبطئ سير العمل كله'},
-  {c:'work', en:'align on', ex:'Let’s align on the goals before we start.', ar:'نتفق ونوحّد الرؤية حول نقطة معينة'},
-  {c:'work', en:'bandwidth', ex:'I don’t have the bandwidth to take this on this week.', ar:'الوقت أو الطاقة المتاحة لعمل إضافي (استخدام مجازي)'},
-  {c:'work', en:'heads-up', ex:'Just a heads-up: the meeting moved to 3 PM.', ar:'تنبيه مسبق ودّي قبل حدوث شيء'},
-  {c:'work', en:'touch base', ex:'Let’s touch base tomorrow morning.', ar:'نتواصل سريعاً للاطمئنان على سير العمل'},
-  {c:'work', en:'key takeaway', ex:'The key takeaway from the analysis is that churn is seasonal.', ar:'الخلاصة أو أهم استنتاج'},
-  {c:'work', en:'leverage', ex:'We can leverage existing data instead of collecting new data.', ar:'نستفيد من / نوظّف شيئاً موجوداً لتحقيق نتيجة'},
-  {c:'work', en:'streamline', ex:'This script streamlines the reporting process.', ar:'يبسّط ويسرّع عملية كانت معقدة'},
-  {c:'work', en:'brainstorm', ex:'Let’s brainstorm some ideas for the next analysis.', ar:'عصف ذهني: توليد أفكار بشكل جماعي وحر'},
-  {c:'work', en:'feedback', ex:'I’d appreciate your feedback on my analysis.', ar:'ملاحظات وتقييم على عملك'},
-  {c:'work', en:'prioritize', ex:'We need to prioritize the tasks for this sprint.', ar:'نرتب الأولويات ونبدأ بالأهم'},
-  {c:'work', en:'workaround', ex:'We found a workaround until the bug is fixed.', ar:'حل مؤقت بديل يتجاوز المشكلة'},
-  {c:'work', en:'scope', ex:'That request is outside the scope of this project.', ar:'نطاق المشروع: حدود ما يشمله وما لا يشمله'},
-  {c:'work', en:'handover', ex:'I prepared a handover document before my vacation.', ar:'تسليم المهام والمعلومات لشخص آخر'},
+  {c:'ds', en:'overfitting', def:'When a model learns the training data too well and fails to generalize to new data.', ar:'فرط التخصيص: النموذج يحفظ بيانات التدريب ويفشل في التعميم على بيانات جديدة', exs:[
+    'The model suffers from overfitting, so it performs poorly on new data.',
+    'Adding more training data reduced the overfitting significantly.',
+    'Early stopping is a simple way to prevent overfitting.']},
+  {c:'ds', en:'feature engineering', def:'Creating useful input variables from raw data to improve a model.', ar:'هندسة الخصائص: إنشاء متغيرات مفيدة من البيانات الخام', exs:[
+    'Good feature engineering improved our model’s accuracy significantly.',
+    'I spent most of the project time on feature engineering.',
+    'Domain knowledge is the secret behind great feature engineering.']},
+  {c:'ds', en:'outlier', def:'A data point that is very different from the rest of the data.', ar:'قيمة شاذة تختلف كثيراً عن باقي البيانات', exs:[
+    'We removed the outliers before training the model.',
+    'A single outlier can distort the average dramatically.',
+    'We investigated each outlier before deciding to delete it.']},
+  {c:'ds', en:'data pipeline', def:'An automated flow that moves and transforms data from source to destination.', ar:'سلسلة معالجة البيانات من المصدر حتى النتيجة النهائية', exs:[
+    'I built an automated data pipeline that runs every night.',
+    'The pipeline failed last night, so the dashboard is outdated.',
+    'We monitor the data pipeline for delays and errors.']},
+  {c:'ds', en:'baseline', def:'A simple reference model or result that new results are compared against.', ar:'نموذج مرجعي بسيط تُقاس عليه أي نتائج لاحقة', exs:[
+    'Always compare your model against a simple baseline.',
+    'Our baseline was just the average of last month’s sales.',
+    'The new model beat the baseline by twelve percent.']},
+  {c:'ds', en:'hyperparameter tuning', def:'Adjusting a model’s settings to get the best possible performance.', ar:'ضبط المعاملات الفائقة لتحسين أداء النموذج', exs:[
+    'Hyperparameter tuning took longer than expected.',
+    'We used grid search for hyperparameter tuning.',
+    'Careful tuning improved recall without hurting precision.']},
+  {c:'ds', en:'cross-validation', def:'Evaluating a model by training and testing it on different splits of the data.', ar:'التحقق المتقاطع: تقييم النموذج بتقسيم البيانات عدة مرات', exs:[
+    'We used 5-fold cross-validation to evaluate the model.',
+    'Cross-validation gives a more reliable estimate than a single split.',
+    'The scores were stable across all five folds.']},
+  {c:'ds', en:'imbalanced data', def:'A dataset where one class is much more common than the others.', ar:'بيانات غير متوازنة: فئة تطغى على الأخرى بشكل كبير', exs:[
+    'Fraud detection usually involves highly imbalanced data.',
+    'With imbalanced data, accuracy alone is misleading.',
+    'We used oversampling to handle the imbalanced classes.']},
+  {c:'ds', en:'data leakage', def:'When information from outside the training set sneaks into model training.', ar:'تسرب البيانات: معلومات من بيانات الاختبار تتسرب إلى التدريب', exs:[
+    'Data leakage made our results look better than they really were.',
+    'The timestamp column caused subtle data leakage.',
+    'Split your data before any preprocessing to avoid leakage.']},
+  {c:'ds', en:'inference', def:'Using a trained model to make predictions on new data.', ar:'الاستدلال: استخدام النموذج للتنبؤ بعد تدريبه', exs:[
+    'The model takes 50 milliseconds per inference.',
+    'We optimized the model to speed up inference.',
+    'Inference runs on the server after deployment.']},
+  {c:'ds', en:'deployment', def:'Releasing a model or application so it can be used in production.', ar:'نشر النموذج ليُستخدم فعلياً في بيئة الإنتاج', exs:[
+    'We deployed the model to production last week.',
+    'Deployment went smoothly with zero downtime.',
+    'We automated deployment with a simple CI pipeline.']},
+  {c:'ds', en:'stakeholder', def:'A person or group with an interest in the outcome of your work.', ar:'أصحاب المصلحة: الأشخاص المستفيدون من نتائج عملك', exs:[
+    'I presented the findings to the key stakeholders.',
+    'The stakeholders approved the project scope yesterday.',
+    'Understanding stakeholder needs comes before building anything.']},
+  {c:'ds', en:'actionable insights', def:'Findings that are clear and specific enough to act on directly.', ar:'رؤى قابلة للتنفيذ تُبنى عليها قرارات عملية', exs:[
+    'Our dashboard turns raw data into actionable insights.',
+    'The report was full of charts but had no actionable insights.',
+    'One actionable insight: focus the offers on returning customers.']},
+  {c:'ds', en:'trade-off', def:'A balance where gaining one thing means giving up another.', ar:'موازنة بين خيارين متعارضين، كسبُ أحدهما على حساب الآخر', exs:[
+    'There is a trade-off between model accuracy and interpretability.',
+    'Speed versus accuracy is a classic trade-off.',
+    'We accepted the trade-off to keep the system simple.']},
+  {c:'ds', en:'scalable', def:'Able to keep working well as data or users grow.', ar:'قابل للتوسع مع نمو حجم البيانات أو المستخدمين', exs:[
+    'We need a scalable solution that handles millions of rows.',
+    'The current script is not scalable beyond a million records.',
+    'We chose a scalable cloud setup from day one.']},
+  {c:'ds', en:'exploratory data analysis', def:'Examining data with statistics and plots to understand it before modeling.', ar:'التحليل الاستكشافي: فهم البيانات قبل بناء أي نموذج', exs:[
+    'I always start with exploratory data analysis (EDA).',
+    'EDA revealed thousands of missing values in the income column.',
+    'During EDA, we noticed a strong seasonal pattern.']},
+  {c:'ds', en:'churn', def:'When customers stop using a product or service.', ar:'تسرّب العملاء: توقفهم عن استخدام الخدمة', exs:[
+    'Our model predicts customer churn with 85% accuracy.',
+    'Reducing churn by two percent doubled the profit.',
+    'High churn in the first month points to an onboarding problem.']},
+  {c:'ds', en:'A/B testing', def:'Comparing two versions with real users to see which performs better.', ar:'اختبار مقارنة بين نسختين لمعرفة الأفضل بالبيانات', exs:[
+    'We ran an A/B test to compare the two designs.',
+    'The A/B test showed the new page increased signups.',
+    'We always A/B test before rolling out big changes.']},
+  {c:'ds', en:'ground truth', def:'The verified, real values used to evaluate a model’s predictions.', ar:'البيانات الحقيقية المرجعية التي تُقاس عليها التنبؤات', exs:[
+    'We compared the predictions against the ground truth labels.',
+    'Labeling the ground truth took the team two weeks.',
+    'Without reliable ground truth, evaluation is meaningless.']},
+  {c:'ds', en:'precision', def:'Of everything the model flagged as positive, how much was actually positive.', ar:'الدقة: نسبة صحة ما تنبأ به النموذج إيجابياً', exs:[
+    'High precision means few false alarms.',
+    'Low precision floods the team with false alerts.',
+    'We tuned the threshold to raise precision.']},
+  {c:'ds', en:'recall', def:'Of all the real positive cases, how many the model actually caught.', ar:'الاستدعاء: نسبة الحالات الحقيقية التي التقطها النموذج', exs:[
+    'High recall means we catch most of the real cases.',
+    'In medical screening, recall matters more than precision.',
+    'The model’s recall dropped on the rare categories.']},
+  {c:'ds', en:'ETL', def:'Extract, Transform, Load — the standard process for moving data into a warehouse.', ar:'استخراج البيانات وتحويلها وتحميلها — أساس هندسة البيانات', exs:[
+    'The ETL job extracts, transforms, and loads the data nightly.',
+    'The nightly ETL feeds all the reporting tables.',
+    'We rewrote the ETL and cut processing time in half.']},
+  {c:'ds', en:'anomaly detection', def:'Automatically finding unusual patterns or events in data.', ar:'كشف الشذوذ: رصد الحالات غير الطبيعية تلقائياً', exs:[
+    'We use anomaly detection to flag unusual transactions.',
+    'Anomaly detection caught the billing error early.',
+    'We run anomaly detection on the server logs.']},
+  {c:'ds', en:'data-driven', def:'Based on evidence from data rather than opinions or guesses.', ar:'مبني على البيانات لا على الانطباعات', exs:[
+    'We want every decision here to be data-driven.',
+    'The team built a truly data-driven culture.',
+    'A data-driven decision beats a gut feeling in pricing.']},
+  {c:'ds', en:'model drift', def:'When a model’s performance degrades because real-world data changes over time.', ar:'انحراف النموذج: تدهور أداؤه مع تغيّر البيانات بمرور الوقت', exs:[
+    'Model drift degraded our accuracy after six months.',
+    'We retrain the model monthly to counter drift.',
+    'Monitoring alerts us as soon as model drift starts.']},
+  {c:'ds', en:'interpretability', def:'How easily humans can understand why a model made a decision.', ar:'قابلية التفسير: أن تقدر تشرح لماذا قرر النموذج ما قرره', exs:[
+    'Interpretability matters when you present models to executives.',
+    'We chose a simpler model for its interpretability.',
+    'Regulators demanded interpretability for the credit model.']},
+  {c:'iv', en:'I’m a recent graduate in…', def:'A professional way to introduce yourself as a fresh graduate.', ar:'صيغة احترافية لتقديم نفسك كخريج جديد في بداية المقابلة', exs:[
+    'I’m a recent data science graduate with hands-on project experience.',
+    'I’m a recent graduate in data science from King Saud University.',
+    'As a recent graduate, I bring current, practical knowledge.']},
+  {c:'iv', en:'hands-on experience', def:'Practical experience from actually doing the work, not just studying it.', ar:'خبرة عملية مباشرة (وليست نظرية فقط)', exs:[
+    'I gained hands-on experience through my graduation project.',
+    'The internship gave me hands-on experience with messy real data.',
+    'I built hands-on experience through Kaggle competitions.']},
+  {c:'iv', en:'My strength lies in…', def:'A confident phrase for describing what you are best at.', ar:'صيغة قوية للحديث عن نقاط قوتك بدون مبالغة', exs:[
+    'My strength lies in translating data into clear decisions.',
+    'My strength lies in explaining technical results simply.',
+    'My strength lies in learning new tools very quickly.']},
+  {c:'iv', en:'problem-solving skills', def:'The ability to analyze issues and find effective solutions.', ar:'مهارات حل المشكلات — من أكثر العبارات طلباً في المقابلات', exs:[
+    'This project sharpened my problem-solving skills.',
+    'Debugging the pipeline strengthened my problem-solving skills.',
+    'Employers value problem-solving skills over memorized answers.']},
+  {c:'iv', en:'I’m eager to…', def:'A formal way to show strong motivation (better than “excited” in interviews).', ar:'متحمس وجاد في رغبتي أن… (أنسب من excited في السياق الرسمي)', exs:[
+    'I’m eager to grow within a data-driven team.',
+    'I’m eager to contribute from day one.',
+    'I’m eager to learn from senior data scientists here.']},
+  {c:'iv', en:'collaborate', def:'To work together with others toward a shared goal.', ar:'تعاونتُ مع — فعل أساسي عند الحديث عن العمل الجماعي', exs:[
+    'I collaborated with the marketing team to define the KPIs.',
+    'We collaborated closely with engineering on the launch.',
+    'I enjoy collaborating across different departments.']},
+  {c:'iv', en:'take ownership', def:'To take full responsibility for a task and its results.', ar:'تحمّلت المسؤولية الكاملة عن مهمة — تعبير يحبه المقابلون', exs:[
+    'I took ownership of the entire analysis phase.',
+    'She takes ownership instead of waiting for instructions.',
+    'Taking ownership of the data quality earned me the team’s trust.']},
+  {c:'iv', en:'overcome a challenge', def:'To succeed in dealing with a difficult problem.', ar:'تغلبت على تحدٍ — أساسية لأسئلة المواقف السلوكية', exs:[
+    'The biggest challenge I overcame was cleaning messy real-world data.',
+    'I overcame the challenge by breaking it into small steps.',
+    'We overcame the challenge of poor documentation together.']},
+  {c:'iv', en:'That’s a great question…', def:'A polite phrase that buys you a moment to think.', ar:'عبارة لبقة لكسب ثوانٍ للتفكير أثناء المقابلة', exs:[
+    'That’s a great question — let me think it through.',
+    'That’s a great question; I’d approach it in two steps.',
+    'That’s a great question — let me give a concrete example.']},
+  {c:'iv', en:'walk you through', def:'To explain something step by step.', ar:'أشرح لك بالتفصيل خطوة بخطوة — مثالية لشرح مشاريعك', exs:[
+    'Let me walk you through my approach step by step.',
+    'I’ll walk you through how I cleaned the dataset.',
+    'She walked the panel through the model’s results.']},
+  {c:'iv', en:'KPI (key performance indicator)', def:'A measurable value that shows how well a goal is being met.', ar:'مؤشر أداء رئيسي يُقاس به نجاح العمل', exs:[
+    'We chose retention rate as our main KPI.',
+    'Our main KPI was monthly active users.',
+    'The dashboard tracks every KPI in real time.']},
+  {c:'iv', en:'follow up on', def:'To return to a point or continue a previous topic.', ar:'أعقّب على / أرجع لنقطة سابقة', exs:[
+    'I’d like to follow up on your question about deployment.',
+    'To follow up on your point about scaling, we did test it.',
+    'May I follow up on the team structure question?']},
+  {c:'iv', en:'In my previous project…', def:'A smooth way to bring your experience into an answer.', ar:'طريقة سلسة لإدخال أمثلة من خبرتك في الإجابة', exs:[
+    'In my previous project, I analyzed customer behavior data.',
+    'In my previous project, I built a churn prediction model.',
+    'In my previous project, I led the data collection phase.']},
+  {c:'iv', en:'adaptable', def:'Able to adjust quickly to new conditions or requirements.', ar:'مرن وسريع التأقلم مع المتغيرات', exs:[
+    'I’m adaptable and comfortable with changing requirements.',
+    'I’m adaptable — I switched tools mid-project without delays.',
+    'Startups need adaptable people who can wear many hats.']},
+  {c:'iv', en:'attention to detail', def:'The habit of noticing small but important things.', ar:'الانتباه للتفاصيل — صفة جوهرية لمحلل البيانات', exs:[
+    'Data cleaning taught me real attention to detail.',
+    'Attention to detail saved us from a costly reporting error.',
+    'Reviewing labels demands serious attention to detail.']},
+  {c:'iv', en:'fast learner', def:'Someone who picks up new skills quickly — always add proof.', ar:'سريع التعلم — واذكر دائماً دليلاً معها', exs:[
+    'I’m a fast learner — I picked up SQL in two weeks for my project.',
+    'Being a fast learner helped me adopt new libraries easily.',
+    'As a fast learner, I mastered Tableau within a single sprint.']},
+  {c:'iv', en:'end-to-end', def:'Covering the whole process from start to finish.', ar:'من البداية للنهاية — توحي بالاستقلالية والشمولية', exs:[
+    'I built the project end-to-end, from data collection to the final dashboard.',
+    'I owned the analysis end-to-end.',
+    'We need someone who can deliver a model end-to-end.']},
+  {c:'iv', en:'Do you have any questions for us?', def:'The closing interview question — always prepare a smart question to ask back.', ar:'سؤال نهاية المقابلة: حضّر دائماً سؤالاً ذكياً تسأله أنت', exs:[
+    'Yes — how does the data team measure its success?',
+    'Yes — what does success look like in the first six months?',
+    'Yes — how is the data team structured across projects?']},
+  {c:'mail', en:'I hope this email finds you well', def:'A common polite opener for formal emails.', ar:'تحية افتتاحية رسمية شائعة جداً في الإيميلات', exs:[
+    'Dear Ms. Sarah, I hope this email finds you well.',
+    'Dear team, I hope this email finds you well.',
+    'I hope this email finds you well — apologies for the short notice.']},
+  {c:'mail', en:'I am writing to…', def:'A direct opener that states the purpose of your email.', ar:'أكتب إليكم بخصوص… — افتتاحية مباشرة توضح هدف الإيميل', exs:[
+    'I am writing to apply for the Data Analyst position.',
+    'I am writing to request a recommendation letter.',
+    'I am writing to confirm our meeting on Sunday.']},
+  {c:'mail', en:'Please find attached…', def:'The standard phrase for pointing to email attachments.', ar:'تجدون مرفقاً… — الصيغة القياسية للمرفقات', exs:[
+    'Please find attached my resume and portfolio.',
+    'Please find attached the final report.',
+    'Please find attached the updated project timeline.']},
+  {c:'mail', en:'I would appreciate…', def:'A polite, indirect way to make a request.', ar:'سأكون ممتناً لو… — طلب مهذب وغير مباشر', exs:[
+    'I would appreciate the opportunity to discuss my application.',
+    'I would appreciate your feedback on the draft.',
+    'I would appreciate a quick call to clarify the scope.']},
+  {c:'mail', en:'Looking forward to hearing from you', def:'A friendly professional closing that invites a reply.', ar:'بانتظار ردكم — خاتمة مهنية لطيفة', exs:[
+    'Looking forward to hearing from you soon.',
+    'Looking forward to hearing from you regarding the next steps.',
+    'Looking forward to hearing from you at your convenience.']},
+  {c:'mail', en:'Best regards', def:'The safest formal email sign-off.', ar:'مع أطيب التحيات — الخاتمة الرسمية الأكثر أماناً', exs:[
+    'Best regards,\nMohammed',
+    'Thank you for your time.\nBest regards, Mohammed',
+    'Best regards,\nMohammed Al-Otaibi, Data Analyst']},
+  {c:'mail', en:'following up on', def:'A polite way to remind someone about a previous message.', ar:'أتابع معكم بخصوص… — للتذكير بدون إحراج', exs:[
+    'I’m following up on my previous email regarding the interview.',
+    'I’m following up on the report I sent last week.',
+    'Just following up on my request from Monday.']},
+  {c:'mail', en:'Could you please clarify…?', def:'A polite question to remove ambiguity.', ar:'هل يمكنكم توضيح…؟ — سؤال مهذب عند الغموض', exs:[
+    'Could you please clarify the project requirements?',
+    'Could you please clarify the deadline for phase two?',
+    'Could you please clarify who owns this task?']},
+  {c:'mail', en:'Apologies for the delay', def:'A brief professional apology for a late reply.', ar:'اعتذار مهني مختصر عن التأخير — بدون مبالغة', exs:[
+    'Apologies for the delayed response.',
+    'Apologies for the delay — I was out of office.',
+    'Apologies for the delay; here are the numbers you requested.']},
+  {c:'mail', en:'reach out', def:'A modern professional alternative to “contact”.', ar:'تواصل مع — بديل عصري واحترافي لكلمة contact', exs:[
+    'Feel free to reach out if you have any questions.',
+    'Please reach out if anything is unclear.',
+    'I’m reaching out about the data analyst opening.']},
+  {c:'mail', en:'to summarize', def:'A phrase to wrap up the key points.', ar:'للتلخيص — مفيدة في نهاية الإيميلات والاجتماعات', exs:[
+    'To summarize, we agreed on three main deliverables.',
+    'To summarize, the model is ready and the docs are updated.',
+    'To summarize our call: two deliverables by Thursday.']},
+  {c:'mail', en:'deliverable', def:'A concrete piece of work you hand over at the end of a task.', ar:'مُخرَج نهائي يُسلَّم في نهاية العمل أو المشروع', exs:[
+    'The final deliverable is a dashboard and a short report.',
+    'The main deliverable this month is the churn analysis.',
+    'All deliverables were submitted on time.']},
+  {c:'mail', en:'Thank you for your time', def:'A polite closing, ideal for applications and interviews.', ar:'شكراً لوقتكم — خاتمة مثالية لإيميلات التقديم', exs:[
+    'Thank you for your time and consideration.',
+    'Thank you for your time today — the discussion was valuable.',
+    'Thank you for your time; I look forward to the next steps.']},
+  {c:'mail', en:'as per…', def:'Formal shorthand for “according to / as agreed”.', ar:'بناءً على / حسب ما اتفقنا عليه', exs:[
+    'As per our conversation, I’m sending the updated report.',
+    'As per the contract, the data stays on your servers.',
+    'As per your request, I added a summary slide.']},
+  {c:'mail', en:'at your earliest convenience', def:'A polite way to say “as soon as you reasonably can”.', ar:'في أقرب وقت يناسبكم — استعجال مهذب', exs:[
+    'Please review the file at your earliest convenience.',
+    'Please sign the form at your earliest convenience.',
+    'Could we schedule a call at your earliest convenience?']},
+  {c:'mail', en:'keep you posted', def:'To keep someone updated on progress.', ar:'سأبقيك على اطلاع بالمستجدات', exs:[
+    'I’ll keep you posted on the progress.',
+    'I’ll keep you posted on the test results.',
+    'Keep me posted if anything changes on your side.']},
+  {c:'mail', en:'on the same page', def:'Sharing the same understanding of a situation.', ar:'متفقون وفاهمون الشيء نفسه', exs:[
+    'I want to make sure we’re on the same page before we start.',
+    'Let’s meet quickly to get everyone on the same page.',
+    'The demo got the whole team on the same page.']},
+  {c:'mail', en:'kind reminder', def:'A gentle way to remind someone without pressure.', ar:'تذكير لطيف — لتذكير الآخرين بدون ضغط', exs:[
+    'Just a kind reminder about tomorrow’s deadline.',
+    'A kind reminder: the survey closes tonight.',
+    'This is a kind reminder regarding the pending invoice.']},
+  {c:'work', en:'deadline', def:'The date or time by which something must be finished.', ar:'الموعد النهائي للتسليم', exs:[
+    'We’re on track to meet the deadline.',
+    'The deadline moved up, so we re-planned the week.',
+    'Tight deadlines taught me to prioritize well.']},
+  {c:'work', en:'on track', def:'Progressing as planned.', ar:'يسير حسب الخطة', exs:[
+    'The project is on track and will finish on time.',
+    'Are we still on track for the Q3 launch?',
+    'After the fix, the migration is back on track.']},
+  {c:'work', en:'bottleneck', def:'The single point that slows down the whole process.', ar:'عنق الزجاجة: النقطة التي تبطئ سير العمل كله', exs:[
+    'Data collection was the main bottleneck in the project.',
+    'Manual approvals became a serious bottleneck.',
+    'We removed the bottleneck by automating the checks.']},
+  {c:'work', en:'align on', def:'To reach a shared agreement about something.', ar:'نتفق ونوحّد الرؤية حول نقطة معينة', exs:[
+    'Let’s align on the goals before we start.',
+    'Let’s align on priorities before the sprint begins.',
+    'The two teams aligned on a single success metric.']},
+  {c:'work', en:'bandwidth', def:'Informal: the time or capacity to take on more work.', ar:'الوقت أو الطاقة المتاحة لعمل إضافي (استخدام مجازي)', exs:[
+    'I don’t have the bandwidth to take this on this week.',
+    'Do you have bandwidth for a quick review today?',
+    'My bandwidth is limited until the release ships.']},
+  {c:'work', en:'heads-up', def:'A friendly early warning about something.', ar:'تنبيه مسبق ودّي قبل حدوث شيء', exs:[
+    'Just a heads-up: the meeting moved to 3 PM.',
+    'Thanks for the heads-up about the API change.',
+    'Quick heads-up — the data refresh is delayed today.']},
+  {c:'work', en:'touch base', def:'To make brief contact to check progress.', ar:'نتواصل سريعاً للاطمئنان على سير العمل', exs:[
+    'Let’s touch base tomorrow morning.',
+    'Let’s touch base after the client call.',
+    'I’ll touch base with the vendor about the license.']},
+  {c:'work', en:'key takeaway', def:'The most important conclusion to remember.', ar:'الخلاصة أو أهم استنتاج', exs:[
+    'The key takeaway from the analysis is that churn is seasonal.',
+    'My key takeaway: start simple, then iterate.',
+    'The key takeaway from the meeting was to cut scope.']},
+  {c:'work', en:'leverage', def:'To use something you already have to gain an advantage.', ar:'نستفيد من / نوظّف شيئاً موجوداً لتحقيق نتيجة', exs:[
+    'We can leverage existing data instead of collecting new data.',
+    'We leveraged open-source tools to save the budget.',
+    'Leverage your network when you’re job hunting.']},
+  {c:'work', en:'streamline', def:'To make a process simpler and more efficient.', ar:'يبسّط ويسرّع عملية كانت معقدة', exs:[
+    'This script streamlines the reporting process.',
+    'The new form streamlined our onboarding.',
+    'We streamlined reporting from three days to one.']},
+  {c:'work', en:'brainstorm', def:'To generate many ideas freely, usually as a group.', ar:'عصف ذهني: توليد أفكار بشكل جماعي وحر', exs:[
+    'Let’s brainstorm some ideas for the next analysis.',
+    'We brainstormed twenty ideas and kept the best three.',
+    'The team brainstorms every Sunday morning.']},
+  {c:'work', en:'feedback', def:'Comments and evaluation on your work.', ar:'ملاحظات وتقييم على عملك', exs:[
+    'I’d appreciate your feedback on my analysis.',
+    'Early feedback saved us weeks of rework.',
+    'I always act on feedback quickly.']},
+  {c:'work', en:'prioritize', def:'To rank tasks and start with the most important.', ar:'نرتب الأولويات ونبدأ بالأهم', exs:[
+    'We need to prioritize the tasks for this sprint.',
+    'Prioritize the bugs that affect customers first.',
+    'We prioritized features by impact and effort.']},
+  {c:'work', en:'workaround', def:'A temporary alternative solution that bypasses a problem.', ar:'حل مؤقت بديل يتجاوز المشكلة', exs:[
+    'We found a workaround until the bug is fixed.',
+    'The workaround kept us running until the patch arrived.',
+    'Document the workaround so others can use it.']},
+  {c:'work', en:'scope', def:'The boundaries of what a project includes and excludes.', ar:'نطاق المشروع: حدود ما يشمله وما لا يشمله', exs:[
+    'That request is outside the scope of this project.',
+    'Adding new charts would expand the scope too much.',
+    'We froze the scope to protect the deadline.']},
+  {c:'work', en:'handover', def:'Passing tasks and knowledge to another person.', ar:'تسليم المهام والمعلومات لشخص آخر', exs:[
+    'I prepared a handover document before my vacation.',
+    'The handover doc covered every open task.',
+    'A clean handover made the transition painless.']},
 ];
 let ALL_CARDS = [], CARD_BY_EN = {};
 function rebuildCards(){
-  ALL_CARDS = CARDS.concat((state.custom||[]).map(c=>({c:'my', en:c.en, ex:c.ex, ar:c.ar, custom:true})));
+  ALL_CARDS = CARDS.concat((state.custom||[]).map(c=>({
+    c:'my', en:c.en, ar:c.ar,
+    def: c.def || '',
+    exs: Array.isArray(c.exs) ? c.exs : (c.ex ? [c.ex] : []),
+    custom:true,
+  })));
   CARD_BY_EN = Object.fromEntries(ALL_CARDS.map(c=>[c.en,c]));
 }
 
@@ -855,39 +1117,53 @@ async function askClaude(prompt){
   throw new Error('no-ai');
 }
 /* free card generation — dictionary + translation, no key needed */
+async function freeTranslate(text){
+  const r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(text.slice(0,450))+'&langpair=en|ar');
+  if (!r.ok) return '';
+  const d = await r.json();
+  const t = (d && d.responseData && d.responseData.translatedText) || '';
+  return (t && !/MYMEMORY WARNING/i.test(t)) ? t : '';
+}
 async function freeCardGen(word){
   const w = word.trim();
-  let defEn = '', ex = '';
-  if (!/\s/.test(w)){
-    try{
-      const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(w.toLowerCase()));
-      if (r.ok){
-        const d = await r.json();
-        outer:
+  const single = !/\s/.test(w);
+  let defEn = '';
+  const exs = [];
+  if (single){
+    let res = null;
+    try{ res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(w.toLowerCase())); }catch(e){}
+    if (res && res.status === 404){
+      // not a real English word — refuse and suggest corrections
+      let suggestions = [];
+      try{
+        const s = await fetch('https://api.datamuse.com/words?sp='+encodeURIComponent(w.toLowerCase())+'&max=4');
+        if (s.ok) suggestions = (await s.json()).map(x=>x.word).slice(0,4);
+      }catch(e){}
+      const err = new Error('not-a-word'); err.suggestions = suggestions; throw err;
+    }
+    if (res && res.ok){
+      try{
+        const d = await res.json();
         for (const entry of (Array.isArray(d)?d:[])){
           for (const m of (entry.meanings||[])){
             for (const def of (m.definitions||[])){
               if (!defEn) defEn = def.definition||'';
-              if (!ex && def.example) ex = def.example;
-              if (defEn && ex) break outer;
+              if (def.example && exs.length < 3 && !exs.includes(def.example)) exs.push(def.example);
             }
           }
         }
-      }
-    }catch(e){}
-  }
-  let ar = '';
-  try{
-    const q = (defEn || w).slice(0, 450);
-    const r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=en|ar');
-    if (r.ok){
-      const d = await r.json();
-      const t = (d && d.responseData && d.responseData.translatedText) || '';
-      if (t && !/MYMEMORY WARNING/i.test(t)) ar = t;
+      }catch(e){}
     }
-  }catch(e){}
+  }
+  // Arabic meaning: translate the word itself first (concise, like a bilingual
+  // dictionary); fall back to translating the English definition
+  let ar = '';
+  try{ ar = await freeTranslate(w); }catch(e){}
+  if ((!ar || ar.trim().toLowerCase() === w.toLowerCase()) && defEn){
+    try{ const t = await freeTranslate(defEn); if (t) ar = t; }catch(e){}
+  }
   if (!ar && !defEn) throw new Error('dict-fail');
-  return { ar: ar || defEn, ex };
+  return { ar: ar || defEn, def: defEn, exs };
 }
 
 function extractJSON(text){
@@ -945,23 +1221,34 @@ function aiErrorHTML(err){
   if (err && err.message === 'refused') msg = 'النموذج اعتذر عن هذا الطلب. جرّب صياغة النص بشكل مختلف.';
   return `<div class="notice err">${esc(msg)}</div>`;
 }
+function cardExs(card){ return Array.isArray(card.exs) ? card.exs.filter(Boolean) : (card.ex ? [card.ex] : []); }
 function flashHTML(card, opts={}){
   const e = state.srs[card.en];
   const lvlTxt = !e ? 'جديدة ✨' : (e.l>=4 ? 'متقنة ★' : 'مستوى '+(e.l+1)+'/6');
+  const exs = cardExs(card);
   return `
   <div class="flash-stage">
     <div class="flash-card" id="flashCard" role="button" tabindex="0" aria-label="بطاقة تعليمية — اضغط للقلب">
       <div class="flash-face front">
-        <span class="flash-cat">${esc(CATS[card.c])}</span>
-        <div class="flash-term en">${esc(card.en)}</div>
-        ${opts.hideExample ? '' : `<div class="flash-ex">“${esc(card.ex)}”</div>`}
-        <span class="flash-hint">اضغط لعرض المعنى</span>
+        <div class="flash-inner">
+          <span class="flash-cat">${esc(CATS[card.c])}</span>
+          <div class="flash-term en">${esc(card.en)}</div>
+          ${opts.hideExample || !exs.length ? '' : `<div class="flash-ex">“${esc(exs[0])}”</div>`}
+          <span class="flash-hint">اضغط لعرض المعنى</span>
+        </div>
       </div>
       <div class="flash-face back">
-        <span class="flash-cat">المعنى</span>
-        <div class="flash-ar">${esc(card.ar)}</div>
-        <div class="flash-ex">“${esc(card.ex)}”</div>
-        <span class="flash-hint">اضغط للرجوع</span>
+        <div class="flash-inner">
+          <span class="mini-label">المعنى</span>
+          <div class="flash-ar">${esc(card.ar)}</div>
+          ${card.def ? `
+          <span class="mini-label">In English</span>
+          <div class="flash-def">${esc(card.def)}</div>` : ''}
+          ${exs.length ? `
+          <span class="mini-label">أمثلة (${exs.length})</span>
+          <div class="flash-exs">${exs.slice(0,3).map(x=>`<div class="exi">${esc(x)}</div>`).join('')}</div>` : ''}
+          <span class="flash-hint">اضغط للرجوع</span>
+        </div>
       </div>
       <span class="flash-lvl ${e && e.l>=4 ? 'hot':''}">${lvlTxt}</span>
     </div>
@@ -1363,11 +1650,20 @@ function renderAdd(area){
       <h3 style="font-size:15px; margin-bottom:6px">أضف كلمتك ⭐</h3>
       <p class="muted-note" style="margin-bottom:12px">صادفت كلمة في مقال أو فيديو أو وصف وظيفة؟ أضفها هنا وبتدخل جدول مراجعاتك مثل باقي الكلمات — والذكاء الاصطناعي يجهز لك المعنى والمثال.</p>
       <div class="settings-row">
-        <input id="addEn" placeholder="the word or phrase (English)" autocomplete="off">
-        <button class="btn btn-soft btn-sm" id="addGen">🪄 ولّد المعنى والمثال تلقائياً</button>
-        <input id="addAr" placeholder="المعنى بالعربي" style="direction:rtl; text-align:right">
-        <input id="addEx" placeholder="Example sentence (English)">
-        <button class="btn btn-primary" id="addSave">احفظها وأضفها لمراجعاتي ✓</button>
+        <label class="f-label">الكلمة أو العبارة
+          <input id="addEn" placeholder="e.g. milestone" autocomplete="off">
+        </label>
+        <button class="btn btn-primary" id="addGen">🪄 ولّد المعاني و٣ أمثلة تلقائياً</button>
+        <label class="f-label">المعنى بالعربي
+          <input id="addAr" placeholder="المعنى بالعربي" style="direction:rtl; text-align:right">
+        </label>
+        <label class="f-label">المعنى بالإنجليزي (اختياري)
+          <input id="addDef" placeholder="Meaning in English">
+        </label>
+        <label class="f-label">أمثلة — سطر لكل مثال، حتى ٣ (اختياري)
+          <textarea id="addExs" class="input-en" style="min-height:88px" placeholder="Example 1&#10;Example 2&#10;Example 3"></textarea>
+        </label>
+        <button class="btn btn-soft" id="addSave">احفظها وأضفها لمراجعاتي ✓</button>
       </div>
       <div id="addMsg" style="margin-top:10px"></div>
     </div>
@@ -1387,34 +1683,61 @@ function renderAdd(area){
 
 The learner wants to add the English word/phrase "${en}" to his flashcards.
 
+IMPORTANT — validate first: is "${en}" a real, correctly spelled English word or phrase? Learner mistakes like "eated" (correct: "ate") or "fastly" (correct: "quickly") are NOT valid.
+
 ${JSON_RULES}
 Schema:
 {
+ "valid": true,
+ "correct": "if invalid: the corrected form; if valid: empty string",
  "ar": "معنى عربي واضح ومختصر بأسلوب بطاقة تعليمية، مع لمسة توضح متى تُستخدم",
- "ex": "one natural, professional English example sentence (work or data-science context when it fits)"
-}`;
+ "def": "a clear, short English definition (learner-friendly)",
+ "exs": ["three natural, professional English example sentences in DIFFERENT contexts (work, data-science, daily professional life)", "...", "..."]
+}
+If invalid, fill ar/def/exs for the CORRECTED word, not the wrong one.`;
+    const fill = (r, msgHTML)=>{
+      $('addAr').value = r.ar || '';
+      $('addDef').value = r.def || '';
+      $('addExs').value = (r.exs||[]).filter(Boolean).slice(0,3).join('\n');
+      msg.innerHTML = msgHTML;
+    };
+    const showNotAWord = (suggestions)=>{
+      const sugg = (suggestions||[]).filter(Boolean);
+      msg.innerHTML = `
+        <div class="notice err">✋ «<span class="en">${esc(en)}</span>» ليست كلمة إنجليزية صحيحة — تأكد من إملائها.</div>
+        ${sugg.length ? `<p class="muted-note" style="margin:8px 0 6px">يمكن تقصد:</p>
+        <div class="chips">${sugg.map(s=>`<button class="chip" data-sugg="${esc(s)}">${esc(s)}</button>`).join('')}</div>` : ''}
+        <p class="muted-note" style="margin-top:8px">إذا كنت متأكداً أنها صحيحة (اختصار أو مصطلح تخصصي)، عبّئ المعنى يدوياً واحفظها.</p>`;
+      msg.querySelectorAll('[data-sugg]').forEach(b=>b.addEventListener('click', ()=>{
+        $('addEn').value = b.dataset.sugg;
+        $('addGen').click();
+      }));
+    };
     try{
       if (hasAI()){
         try{
-          const raw = await askClaude(prompt);
-          const r = extractJSON(raw);
-          $('addAr').value = r.ar || '';
-          $('addEx').value = r.ex || '';
-          msg.innerHTML = '<div class="praise">✓ جاهزة بالذكاء الاصطناعي — عدّل ما تشاء ثم احفظها.</div>';
+          const r = extractJSON(await askClaude(prompt));
+          if (r.valid === false){
+            const correct = (r.correct||'').trim();
+            if (correct){
+              $('addEn').value = correct;
+              fill(r, `<div class="notice">⚠️ «<span class="en">${esc(en)}</span>» غير صحيحة — صححتها لك إلى «<span class="en">${esc(correct)}</span>» وولّدت معناها وأمثلتها. راجع ثم احفظ.</div>`);
+            } else {
+              showNotAWord([]);
+            }
+          } else {
+            fill(r, '<div class="praise">✓ جاهزة بالذكاء الاصطناعي — عدّل ما تشاء ثم احفظها.</div>');
+          }
         }catch(e){
-          const r = await freeCardGen(en);
-          $('addAr').value = r.ar || '';
-          $('addEx').value = r.ex || '';
-          msg.innerHTML = '<div class="praise">✓ جاهزة من القاموس المجاني — راجع المعنى وعدّله لو حبيت.</div>';
+          if (e.message === 'not-a-word'){ showNotAWord(e.suggestions); }
+          else fill(await freeCardGen(en), '<div class="praise">✓ جاهزة من القاموس المجاني — راجع وعدّل لو حبيت.</div>');
         }
       } else {
-        const r = await freeCardGen(en);
-        $('addAr').value = r.ar || '';
-        $('addEx').value = r.ex || '';
-        msg.innerHTML = '<div class="praise">✓ جاهزة من القاموس المجاني — راجع المعنى وعدّله لو حبيت.</div>';
+        fill(await freeCardGen(en), '<div class="praise">✓ جاهزة من القاموس المجاني — راجع وعدّل لو حبيت.</div>');
       }
     }catch(err){
-      msg.innerHTML = '<div class="notice err">تعذّر التوليد هنا (لا ذكاء اصطناعي ولا اتصال بالقاموس). اكتب المعنى يدوياً، أو افتح التطبيق من موقعك <span class="en">6-f-7.github.io/bigdata</span> حيث يعمل القاموس المجاني دائماً.</div>';
+      if (err.message === 'not-a-word'){ showNotAWord(err.suggestions); }
+      else msg.innerHTML = '<div class="notice err">تعذّر التوليد هنا (لا ذكاء اصطناعي ولا اتصال بالقاموس). اكتب المعنى يدوياً، أو افتح التطبيق من موقعك <span class="en">6-f-7.github.io/bigdata</span> حيث يعمل القاموس المجاني دائماً.</div>';
     }finally{
       setLoading($('addGen'), false);
     }
@@ -1422,16 +1745,17 @@ Schema:
   $('addSave').addEventListener('click', ()=>{
     const en = $('addEn').value.trim();
     const ar = $('addAr').value.trim();
-    const ex = $('addEx').value.trim();
+    const def = $('addDef').value.trim();
+    const exs = $('addExs').value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3);
     const msg = $('addMsg');
     if (!en || !ar){ msg.innerHTML = '<div class="notice">أقل شيء: الكلمة الإنجليزية + معناها بالعربي (أو اضغط زر التوليد 🪄).</div>'; return; }
     if (CARD_BY_EN[en]){ msg.innerHTML = '<div class="notice">هذي الكلمة موجودة عندك أصلاً 🙂</div>'; return; }
-    state.custom.push({en, ar, ex});
+    state.custom.push({en, ar, def, exs});
     rebuildCards();
     state.srs[en] = {l:0, due: todayStr()};
     saveState();
     renderWordsBadge();
-    $('addEn').value = ''; $('addAr').value = ''; $('addEx').value = '';
+    $('addEn').value = ''; $('addAr').value = ''; $('addDef').value = ''; $('addExs').value = '';
     msg.innerHTML = `
       <div class="praise" style="flex-direction:column; align-items:stretch; gap:10px">
         <span>⭐ أضفت «<span class="en">${esc(en)}</span>» — دخلت مراجعاتك من اليوم!</span>
